@@ -4,7 +4,7 @@
     <el-main>
       <transition name="el-fade-in-linear"> </transition>
       <div class="chart-container">
-        <ChartMap height="100%" width="100%" />
+        <PatentMap height="100%" width="100%" />
       </div>
     </el-main>
     <el-footer height="70px">
@@ -16,12 +16,12 @@
 <script>
 // import Splitter from 'primevue/splitter';
 // import SplitterPanel from 'primevue/splitterpanel';
-import ChartMap from "@/components/Charts/Map";
+import PatentMap from "@/components/Charts/PatentLine";
 
 export default {
   name: "App",
   // components: {Splitter, SplitterPanel},
-  components: { ChartMap },
+  components: { PatentMap },
   methods: {},
 };
 </script>
