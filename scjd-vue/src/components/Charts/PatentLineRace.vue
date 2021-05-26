@@ -70,7 +70,7 @@ export default {
           },
         },
         legend: {
-          top:35,
+          top: 35,
           data: [
             "乌鲁木齐",
             "昌吉州",
@@ -96,7 +96,7 @@ export default {
           containLabel: true,
         },
         toolbox: {
-          right:10,
+          right: 10,
           show: true,
           feature: {
             saveAsImage: { show: true },
@@ -261,7 +261,10 @@ export default {
       };
 
       option && myChart.setOption(option);
-      window.onresize = myChart.resize; //Echarts自适应浏览器大小
+      this.chart = myChart;
+      window.onresize = function () {
+        this.chart.resize();
+      };
     },
   },
 };

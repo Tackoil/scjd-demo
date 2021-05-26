@@ -69,7 +69,15 @@ export default {
           },
           dataset: {
             source: [
-              ["Proportion", "2020.10", "2020.11", "2020.12", "2021.01", "2021.02", "2021.03"],
+              [
+                "Proportion",
+                "2020.10",
+                "2020.11",
+                "2020.12",
+                "2021.01",
+                "2021.02",
+                "2021.03",
+              ],
               ["发明专利", 326, 468, 92, 59, 84, 102],
               ["实用新型", 1390, 1670, 1077, 865, 901, 1196],
               ["外观设计", 91, 91, 79, 50, 52, 133],
@@ -138,6 +146,10 @@ export default {
       });
 
       option && myChart.setOption(option);
+      this.chart = myChart;
+      window.onresize = function () {
+        this.chart.resize();
+      };
     },
   },
 };
