@@ -51,6 +51,7 @@ import PatentPie from "@/components/Charts/PatentPie";
 import PatentLineRace from "@/components/Charts/PatentLineRace";
 import PatentLine from "@/components/Charts/PatentLine";
 import PatentMap from "@/components/Charts/PatentMap";
+import EnterpriseBar from "@/components/EnterpriseCharts/EnterpriseBar";
 
 var elementResizeDetectorMaker = require("element-resize-detector");
 var erd = elementResizeDetectorMaker();
@@ -60,11 +61,12 @@ const testLayout = [
   { x: 2, y: 0, w: 2, h: 4, i: 1 },
   { x: 4, y: 0, w: 2, h: 5, i: 2 },
   { x: 6, y: 0, w: 2, h: 3, i: 3 },
+  { x: 8, y: 0, w: 2, h: 5, i: 4 }
 ];
 
 export default {
   name: "App",
-  components: {PatentPie, PatentLineRace, PatentLine, PatentMap},
+  components: {PatentPie, PatentLineRace, PatentLine, PatentMap, EnterpriseBar},
   data() {
     return {
       layout: JSON.parse(JSON.stringify(testLayout)),
@@ -76,7 +78,8 @@ export default {
         0: 'patent-pie',
         1: 'patent-line-race',
         2: 'patent-line',
-        3: 'patent-map'
+        3: 'patent-map',
+        4: 'enterprise-bar'
       }
     };
   },
