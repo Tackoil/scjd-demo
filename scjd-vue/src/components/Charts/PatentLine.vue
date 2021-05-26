@@ -1,5 +1,5 @@
 <template>
-  <div :id="id" :class="className" :style="{ height: height, width: width }" />
+    <div :id="id" :class="className" :style="{ height: height, width: width }" />
 </template>
 
 <script>
@@ -11,10 +11,8 @@ require("echarts/lib/component/legend");
 require("echarts/lib/component/title");
 require("echarts/lib/chart/line");
 require("echarts/lib/chart/pie");
-import resize from "./mixins/resize";
 
 export default {
-  mixins: [resize],
   props: {
     className: {
       type: String,
@@ -147,9 +145,6 @@ export default {
 
       option && myChart.setOption(option);
       this.chart = myChart;
-      window.onresize = function () {
-        this.chart.resize();
-      };
     },
   },
 };

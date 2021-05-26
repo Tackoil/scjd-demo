@@ -33,8 +33,9 @@
                 :i="item.i"
               >
                 <el-card style="height: 100%" :body-style="{height: '100%'}">
-                  <patent-line-race id="a" v-if="item.i === '0'" width="100%" height="100%"/>
-                  <patent-pie id="b" v-if="item.i === '1'" width="100%" height="100%" />
+                  <div :ref="`chart-cont-${item.i}`" style="height: 100%">
+                    <component :is="picDict[item.i]" :ref="`chart-${item.i}`" :id="item.i" width="100%" height="100%"> </component>
+                  </div>
                 </el-card>
               </grid-item>
             </grid-layout>
@@ -48,16 +49,22 @@
 <script>
 import PatentPie from "@/components/Charts/PatentPie";
 import PatentLineRace from "@/components/Charts/PatentLineRace";
+import PatentLine from "@/components/Charts/PatentLine";
+import PatentMap from "@/components/Charts/PatentMap";
+
+var elementResizeDetectorMaker = require("element-resize-detector");
+var erd = elementResizeDetectorMaker();
+
 const testLayout = [
-  { x: 0, y: 0, w: 2, h: 2, i: "0" },
-  { x: 2, y: 0, w: 2, h: 4, i: "1" },
-  { x: 4, y: 0, w: 2, h: 5, i: "2" },
-  { x: 6, y: 0, w: 2, h: 3, i: "3" },
+  { x: 0, y: 0, w: 2, h: 2, i: 0 },
+  { x: 2, y: 0, w: 2, h: 4, i: 1 },
+  { x: 4, y: 0, w: 2, h: 5, i: 2 },
+  { x: 6, y: 0, w: 2, h: 3, i: 3 },
 ];
 
 export default {
   name: "App",
-  components: {PatentPie, PatentLineRace},
+  components: {PatentPie, PatentLineRace, PatentLine, PatentMap},
   data() {
     return {
       layout: JSON.parse(JSON.stringify(testLayout)),
@@ -65,8 +72,26 @@ export default {
       resizable: true,
       compact: true,
       selectedTab: null,
+      picDict: {
+        0: 'patent-pie',
+        1: 'patent-line-race',
+        2: 'patent-line',
+        3: 'patent-map'
+      }
     };
   },
+  mounted() {
+    this.layout.map(item => {
+      erd.listenTo(this.$refs[`chart-cont-${item.i}`], () =>{
+        this.$nextTick(() => {
+          this.$refs[`chart-${item.i}`].chart.resize();
+        })
+      })
+    })
+  },
+  unmounted() {
+    
+  }
 }
 </script>
 
