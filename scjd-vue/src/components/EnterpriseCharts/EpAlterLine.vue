@@ -10,7 +10,7 @@ require("echarts/lib/component/tooltip");
 require("echarts/lib/component/grid");
 require("echarts/lib/component/legend");
 require("echarts/lib/component/dataZoom");
-require("echarts/lib/chart/bar");
+require("echarts/lib/chart/line");
 import resize from "./mixins/resize";
 
 export default {
@@ -41,7 +41,7 @@ export default {
   mounted() {
     this.initChart();
   },
-  // vue3.x版本要修改beforeDestroy()为 beforeUnmount()
+
   beforeUnmount() {
     if (!this.chart) {
       return;
@@ -56,11 +56,11 @@ export default {
       var option;
 
       option = {
-        backgroundColor:'#344b58',
+        
         
 
         title: {
-          text: '市场主体产业变化情况',
+          text: '企业注册、变更、注销统计',
           x: '20',
           top: '20',
           textStyle: {
@@ -76,6 +76,7 @@ export default {
         tooltip: {
           trigger: 'axis',
           axisPointer: {
+            type: 'cross',
             textStyle: {
               color: '#fff'
             }
@@ -89,13 +90,13 @@ export default {
             color: '#90979c'
           },
           data: [
-            "第一产业",
-            "第二产业",
-            "第三产业"
+            "注册",
+            "变更",
+            "注销"
           ],
         },
 
-        calculable: true,
+        calculable: false,
 
         
         grid: {
@@ -104,8 +105,9 @@ export default {
           borderWidth: 0,
           top: 150,
           bottom: 95,
+          containLabel: true,
           textStyle: {
-            color: '#fff'
+            color: '#000'
           }
         },
 
@@ -120,7 +122,7 @@ export default {
           type: "category",
           axisLine: {
             lineStyle: {
-              color: '#90979c'
+              color: '#696969'
             }
           },
            splitLine: {
@@ -157,7 +159,7 @@ export default {
           },
           axisLine: {
             lineStyle: {
-              color: '#90979c'
+              color: '#696969'
             }
           },
           axisTick: {
@@ -201,26 +203,23 @@ export default {
         series: [
           
           {
-            name: "第一产业",
-            type: "bar",
+            name: "注册",
+            type: "line",
             stack: '期末总户数',
             barMaxWidth: 35,
-            barGap: '10%',
             itemStyle: {
-              normal: {
-                color: 'rgba(255,144,128,1)',
-                label: {
-                  show: true,
-                  textStyle: {
-                    color: '#fff'
-                  },
-                  position: 'insideTop',
-                  formatter(p) {
-                    return p.value > 0 ? p.value : ''
-                  }
-              }
-            }
-          },
+                normal: {
+                    color: '#FF005A',
+                    lineStyle: {
+                        color: '#FF005A',
+                        width: 2
+                    }
+                },
+                smooth: true,
+                type: 'line',
+                animationDuration: 2800,
+                animationEasing: 'cubicInOut'
+            },  
             data: [
               1036,
               1748,
@@ -237,69 +236,69 @@ export default {
             ]
           },
           {
-            name: "第二产业",
-            type: "bar",
-            stack: "期末总户数",
+            name: "变更",
+            type: "line",
+            stack: '期末总户数',
+            barMaxWidth: 35,
             itemStyle: {
-            normal: {
-              color: 'rgba(0,191,183,1)',
-              barBorderRadius: 0,
-              label: {
-                show: true,
-                position: 'insidetop',
-                formatter(p) {
-                  return p.value > 0 ? p.value : ''
-                }
-              }
-            }
-          },
+                normal: {
+                    color: '#3888fa',
+                    lineStyle: {
+                        color: '#3888fa',
+                        width: 2
+                    }
+                },
+                smooth: true,
+                type: 'line',
+                animationDuration: 2800,
+                animationEasing: 'cubicInOut'
+            },  
           data: [
-            209,
-            317,
-            533,
+           1155,
             844,
-            1019,
-            1155,
-            1484,
-            1610,
             2285,
             2772,
+            317,
+            533,
+            1610,
+            209,
             3578,
+            1484,
             4308,
+            1019,
             ]
           },
           {
-            name: "第三产业",
-            type: "bar",
-            stack: "期末总户数",
-            symbolSize: 10,
-            symbol: 'circle',
+            name: "注销",
+            type: "line",
+            stack: '期末总户数',
+            barMaxWidth: 35,
             itemStyle: {
-              normal: {
-                color: 'rgba(252,230,48,1)',
-                barBorderRadius: 0,
-                label: {
-                  show: true,
-                  position: 'top',
-                  formatter(p) {
-                    return p.value > 0 ? p.value : ''
-                  }
-                }
-              }
+                normal: {
+                    color: '#DAA520',
+                    lineStyle: {
+                        color: '#DAA520',
+                        width: 2
+                    }
+                },
+                smooth: true,
+                type: 'line',
+                animationDuration: 2800,
+                animationEasing: 'cubicInOut'
             },
             data: [
-              204,
-              220,
-              327,
-              381,
               482,
-              507,
-              800,
+              220,
+              1200,  
+              381, 
               951,  
               1001,
-              1200,  
+              204,
               1390,
+              507,
+              800,
               1776, 
+              327,
             ]
           },
           
