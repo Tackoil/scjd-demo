@@ -10,10 +10,8 @@ require("echarts/lib/component/tooltip");
 require("echarts/lib/component/grid");
 require("echarts/lib/component/legend");
 require("echarts/lib/chart/line");
-import resize from "./mixins/resize";
 
 export default {
-  mixins: [resize],
   props: {
     className: {
       type: String,
@@ -55,11 +53,6 @@ export default {
       var option;
 
       option = {
-        title: {
-          text: "2020年各地州专利授权状况年累计变化",
-          left: 10,
-          top: 10,
-        },
         tooltip: {
           trigger: "axis",
           axisPointer: {
@@ -262,9 +255,6 @@ export default {
 
       option && myChart.setOption(option);
       this.chart = myChart;
-      window.onresize = function () {
-        this.chart.resize();
-      };
     },
   },
 };

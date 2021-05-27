@@ -17,7 +17,7 @@
           </div>
           <div class="content">
             <grid-layout
-              v-model:layout="layout"
+              :layout="layout"
               :col-num="12"
               :row-height="30"
               is-draggable
@@ -112,15 +112,15 @@ export default {
       compact: true,
       selectedTab: null,
       picDict: {
-        0: { comp: "patent-pie" },
-        1: { comp: "patent-line-race" },
-        2: { comp: "patent-line" },
-        3: { comp: "patent-map" },
-        4: { comp: "news-word-map", name: "市场监督新闻动态" },
-        5: { comp: "ep-distribution-pie" },
-        6: { comp: "ep-alter-line" },
-        7: { comp: "enterprise-bar" },
-      },
+        0: {comp:'patent-pie', name: '2021年2月新疆专利授权状况统计'},
+        1: {comp:'patent-line-race', name: '2020年各地州专利授权状况年累计变化'},
+        2: {comp:'patent-line', name: '新疆三种专利每月申请受理趋势变化'},
+        3: {comp:'patent-map', name: '2021年2月新疆各地州专利授权情况'},
+        4: {comp:'news-word-map', name: '市场监督新闻动态'},
+        5: {comp:'ep-distribution-pie'},
+        6: {comp:'ep-alter-line'},
+        7: {comp:'enterprise-bar'},
+      }
     };
   },
   mounted() {

@@ -52,14 +52,6 @@ export default {
       echarts.registerMap("XJ", this.xjJson);
       this.chart = echarts.init(document.getElementById(this.id));
       this.chart.setOption({
-        title: {
-          text: "2021年2月新疆各地州专利授权情况",
-          subtext: "数据来自新疆维吾尔自治区市场监督管理局",
-          sublink:
-            "http://scjgj.xinjiang.gov.cn/xjaic/tzgg/202104/c0f7f7bdc23f4f56a4c473ed56945b9b.shtml",
-          top: 10,
-          left: 10,
-        },
         tooltip: {
           trigger: "item",
           formatter: "{b}<br/>{c} 项(授权)",
