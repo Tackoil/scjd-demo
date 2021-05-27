@@ -8,10 +8,8 @@ const echarts = require("echarts/lib/echarts");
 require("echarts/lib/component/tooltip");
 require("echarts/lib/component/legend");
 require("echarts/lib/chart/pie");
-import resize from "./mixins/resize";
 
 export default {
-  mixins: [resize],
   props: {
     className: {
       type: String,
@@ -50,11 +48,6 @@ export default {
     initChart() {
       this.chart = echarts.init(document.getElementById(this.id));
       this.chart.setOption({
-        title: {
-          text: "2021年2月新疆专利授权状况统计",
-          top: 10,
-          left: 10,
-        },
         tooltip: {
           trigger: "item",
           // a: 专利类型

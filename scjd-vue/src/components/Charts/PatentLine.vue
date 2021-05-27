@@ -55,11 +55,6 @@ export default {
 
       setTimeout(function () {
         option = {
-          title: {
-            text: "新疆三种专利每月申请受理趋势变化",
-            top: 10,
-            left: 10,
-          },
           legend: {},
           tooltip: {
             trigger: "axis",
