@@ -12,8 +12,11 @@
     "echarts": "^4.2.1",
     "element-plus": "^1.0.2-beta.44",
     "element-resize-detector": "^1.2.2",
+    "lodash": "^4.17.21",
     "vue": "^3.0.0",
-    "vue-grid-layout": "^3.0.0-beta1"
+    "vue-grid-layout": "^3.0.0-beta1",
+    "vuewordcloud": "^18.7.12",
+    "wordcloud": "^1.2.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
