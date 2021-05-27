@@ -52,6 +52,9 @@ import PatentLineRace from "@/components/Charts/PatentLineRace";
 import PatentLine from "@/components/Charts/PatentLine";
 import PatentMap from "@/components/Charts/PatentMap";
 import NewsWordMap from "@/components/Charts/NewsWordMap";
+import EnterpriseBar from "@/components/EnterpriseCharts/EnterpriseBar";
+import EpDistributionPie from "@/components/EnterpriseCharts/EpDistributionPie";
+import EpAlterLine from  "@/components/EnterpriseCharts/EpAlterLine";
 
 var elementResizeDetectorMaker = require("element-resize-detector");
 var erd = elementResizeDetectorMaker({strategy: "scroll" });
@@ -64,11 +67,15 @@ const testLayout = [
   { x: 4, y: 0, w: 2, h: 5, i: 2 },
   { x: 6, y: 0, w: 2, h: 3, i: 3 },
   { x: 0, y: 2, w: 12, h: 15, i: 4 },
+  { x: 8, y: 0, w: 2, h: 5, i: 7 },
+  { x: 10, y: 0, w: 2, h: 5, i: 5 },
+  { x: 0, y: 10, w: 2, h: 5, i: 6 },
+
 ];
 
 export default {
   name: "App",
-  components: {PatentPie, PatentLineRace, PatentLine, PatentMap, NewsWordMap},
+  components: {PatentPie, PatentLineRace, PatentLine, PatentMap, EnterpriseBar, EpDistributionPie, EpAlterLine, NewsWordMap},
   data() {
     return {
       layout: JSON.parse(JSON.stringify(testLayout)),
@@ -82,6 +89,10 @@ export default {
         2: 'patent-line',
         3: 'patent-map',
         4: 'news-word-map'
+        4: 'enterprise-bar',
+        5: 'ep-distribution-pie',
+        6: 'ep-alter-line'
+
       }
     };
   },
