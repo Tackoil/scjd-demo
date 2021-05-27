@@ -66,11 +66,10 @@ const testLayout = [
   { x: 2, y: 0, w: 2, h: 4, i: 1 },
   { x: 4, y: 0, w: 2, h: 5, i: 2 },
   { x: 6, y: 0, w: 2, h: 3, i: 3 },
-  { x: 0, y: 2, w: 12, h: 15, i: 4 },
-  { x: 8, y: 0, w: 2, h: 5, i: 7 },
+  { x: 0, y: 2, w: 8, h: 10, i: 4 },
   { x: 10, y: 0, w: 2, h: 5, i: 5 },
   { x: 0, y: 10, w: 2, h: 5, i: 6 },
-
+  { x: 8, y: 0, w: 2, h: 5, i: 7 },
 ];
 
 export default {
@@ -88,11 +87,10 @@ export default {
         1: 'patent-line-race',
         2: 'patent-line',
         3: 'patent-map',
-        4: 'news-word-map'
-        4: 'enterprise-bar',
+        4: 'news-word-map',
         5: 'ep-distribution-pie',
-        6: 'ep-alter-line'
-
+        6: 'ep-alter-line',
+        7: 'enterprise-bar',
       }
     };
   },
