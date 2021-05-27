@@ -36,9 +36,6 @@ export default {
       chart: { resize: () => this.resize() },
     };
   },
-  mounted() {
-    this.resize();
-  },
   methods: {
     resize() {
       WordCloud(this.$refs["news-word-map-cont"], {
