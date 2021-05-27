@@ -33,8 +33,11 @@
                 :i="item.i"
               >
                 <el-card style="height: 100%;" :body-style="{height: '100%', 'box-sizing': 'border-box'}">
+                  <template #header>
+                    {{ picDict[item.i].name }}
+                  </template>
                   <div :ref="`chart-cont-${item.i}`" style="height: 100%">
-                    <component :is="picDict[item.i]" :ref="`chart-${item.i}`" :id="''+item.i" width="100%" height="100%"> </component>
+                    <component :is="picDict[item.i].comp" :ref="`chart-${item.i}`" :id="''+item.i" width="100%" height="100%"> </component>
                   </div>
                 </el-card>
               </grid-item>
@@ -83,14 +86,14 @@ export default {
       compact: true,
       selectedTab: null,
       picDict: {
-        0: 'patent-pie',
-        1: 'patent-line-race',
-        2: 'patent-line',
-        3: 'patent-map',
-        4: 'news-word-map',
-        5: 'ep-distribution-pie',
-        6: 'ep-alter-line',
-        7: 'enterprise-bar',
+        0: {comp:'patent-pie'},
+        1: {comp:'patent-line-race'},
+        2: {comp:'patent-line'},
+        3: {comp:'patent-map'},
+        4: {comp:'news-word-map', name: '市场监督新闻动态'},
+        5: {comp:'ep-distribution-pie'},
+        6: {comp:'ep-alter-line'},
+        7: {comp:'enterprise-bar'},
       }
     };
   },
