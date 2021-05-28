@@ -1,10 +1,14 @@
 <template>
   <el-container style="height: 100vh">
     <el-header height="70px">新疆市场监督管理局大数据平台</el-header>
-    <el-main>
+    <el-main v-loading="loading">
       <el-scrollbar>
         <div style="width: 100%">
-          <div>
+          <el-space>
+            <el-switch v-model="draggable" active-text="允许拖拽">  </el-switch>
+            <el-switch v-model="resizable" active-text="允许拉伸">  </el-switch>
+          </el-space>
+          <div v-if="false">
             <div class="layoutJSON">
               Displayed as <code>[x, y, w, h]</code>:
               <div class="columns">
@@ -15,13 +19,13 @@
               </div>
             </div>
           </div>
-          <div class="content">
+          <div class="content" style="width: 80%; margin-left:auto; margin-right:auto;">
             <grid-layout
               :layout="layout"
               :col-num="12"
               :row-height="30"
-              is-draggable
-              is-resizable
+              :is-draggable="draggable"
+              :is-resizable="resizable"
               vertical-compact
               :use-css-transforms="true"
             >
@@ -44,7 +48,7 @@
                   :body-style="{ flex: 1, 'box-sizing': 'border-box' }"
                 >
                   <template #header>
-                    {{ item.i }} : {{ picDict[item.i].name }}
+                    <span class="subtitle-text">{{ item.i }} : {{ picDict[item.i].name }} </span>
                   </template>
                   <div :ref="`chart-cont-${item.i}`" style="height: 100%">
                     <component
@@ -82,14 +86,14 @@ var erd = elementResizeDetectorMaker({ strategy: "scroll" });
 const _ = require("lodash");
 
 const testLayout = [
-  { x: 0, y: 0, w: 2, h: 2, i: 0 },
-  { x: 2, y: 0, w: 2, h: 4, i: 1 },
-  { x: 4, y: 0, w: 2, h: 5, i: 2 },
-  { x: 6, y: 0, w: 2, h: 3, i: 3 },
-  { x: 0, y: 2, w: 8, h: 10, i: 4 },
-  { x: 10, y: 0, w: 2, h: 5, i: 5 },
-  { x: 0, y: 10, w: 2, h: 5, i: 6 },
-  { x: 8, y: 0, w: 2, h: 5, i: 7 },
+  { x: 0, y: 0, w: 7, h: 16, i: 0 },
+  { x: 0, y: 30, w: 4, h: 16, i: 1 },
+  { x: 4, y: 30, w: 4, h: 16, i: 2 },
+  { x: 5, y: 16, w: 4, h: 14, i: 3 },
+  { x: 8, y: 30, w: 4, h: 16, i: 4 },
+  { x: 9, y: 16, w: 3, h: 14, i: 5 },
+  { x: 0, y: 16, w: 5, h: 14, i: 6 },
+  { x: 7, y: 0, w: 5, h: 16, i: 7 },
 ];
 
 export default {
@@ -107,10 +111,9 @@ export default {
   data() {
     return {
       layout: JSON.parse(JSON.stringify(testLayout)),
-      draggable: true,
-      resizable: true,
-      compact: true,
-      selectedTab: null,
+      draggable: false,
+      resizable: false,
+      loading: true,
       picDict: {
         0: {comp:'patent-pie', name: '2021年2月新疆专利授权状况统计'},
         1: {comp:'patent-line-race', name: '2020年各地州专利授权状况年累计变化'},
@@ -131,6 +134,12 @@ export default {
         });
       });
     });
+    setTimeout(() => {
+      for(const i in this.picDict){
+        this.$refs[`chart-${i}`].chart.resize();
+        this.loading = false;
+      }
+    }, 1200)
   },
   methods: {
     handleResize(i) {
@@ -235,5 +244,10 @@ body {
   right: 2px;
   top: 0;
   cursor: pointer;
+}
+
+.subtitle-text{
+  font-size: 16px;
+  font-weight: 700;
 }
 </style>
