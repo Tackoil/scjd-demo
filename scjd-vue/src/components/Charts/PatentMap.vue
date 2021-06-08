@@ -10,8 +10,10 @@ require("echarts/lib/component/tooltip");
 require("echarts/lib/component/visualMap");
 require("echarts/lib/chart/map");
 require("echarts/lib/component/geo");
+import resize from "./mixins/resize";
 
 export default {
+    mixins: [resize],
   props: {
     className: {
       type: String,

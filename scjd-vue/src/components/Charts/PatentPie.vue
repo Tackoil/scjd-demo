@@ -8,8 +8,10 @@ const echarts = require("echarts/lib/echarts");
 require("echarts/lib/component/tooltip");
 require("echarts/lib/component/legend");
 require("echarts/lib/chart/pie");
+import resize from "./mixins/resize";
 
 export default {
+    mixins: [resize],
   props: {
     className: {
       type: String,
