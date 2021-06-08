@@ -3,7 +3,18 @@
 </template>
 
 <script>
-// 按需引入
+/*
+  组件名：PatentMap
+  功能：复合展示某一个月新疆全省专利授权的专利类型和申请人类型
+  接收参数：
+    calssName: echarts挂载的div的class
+    id：echarts挂载的div的id
+    width,height为div的尺寸
+    info：绘图所必须的数据，用对象的方式存储
+      接受数据格式为
+      num_patent_types:[] 数组长度为3，分别为专利类型为"发明专利","实用新型","外观设计"的专利数量
+      num_applicants_types:[] 数组长度为5，分别为申请人为"个人","工矿企业","大专院校","科研机构","机关团体"的专利数量
+*/
 const echarts = require("echarts/lib/echarts");
 require("echarts/lib/component/tooltip");
 require("echarts/lib/component/legend");
@@ -11,7 +22,7 @@ require("echarts/lib/chart/pie");
 import resize from "./mixins/resize";
 
 export default {
-    mixins: [resize],
+  mixins: [resize],
   props: {
     className: {
       type: String,
@@ -29,6 +40,9 @@ export default {
       type: String,
       default: "200px",
     },
+    info: {
+      type: Object,
+    },
   },
   data() {
     return {
@@ -36,7 +50,7 @@ export default {
     };
   },
   mounted() {
-    this.initChart();
+    this.initChart(this.info);
   },
   // vue3.x版本要修改beforeDestroy()为 beforeUnmount()
   beforeUnmount() {
@@ -47,7 +61,7 @@ export default {
     this.chart = null;
   },
   methods: {
-    initChart() {
+    initChart(info) {
       this.chart = echarts.init(document.getElementById(this.id));
       this.chart.setOption({
         tooltip: {
@@ -84,9 +98,9 @@ export default {
               show: false,
             },
             data: [
-              { value: 84, name: "发明专利", selected: true }, // 这个数据被关注程度较高
-              { value: 901, name: "实用新型" },
-              { value: 52, name: "外观设计" },
+              { value: info.num_patent_types[0], name: "发明专利", selected: true }, // 这个数据被关注程度较高
+              { value: info.num_patent_types[1], name: "实用新型" },
+              { value: info.num_patent_types[2], name: "外观设计" },
             ],
           },
           {
@@ -130,16 +144,15 @@ export default {
               },
             },
             data: [
-              { value: 262, name: "个人" },
-              { value: 546, name: "工况企业" },
-              { value: 134, name: "大专院校" },
-              { value: 55, name: "科研机构" },
-              { value: 40, name: "机关团体" },
+              { value: info.num_applicants_types[0], name: "个人" },
+              { value: info.num_applicants_types[1], name: "工况企业" },
+              { value: info.num_applicants_types[2], name: "大专院校" },
+              { value: info.num_applicants_types[3], name: "科研机构" },
+              { value: info.num_applicants_types[4], name: "机关团体" },
             ],
           },
         ],
       });
-      
     },
   },
 };

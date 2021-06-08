@@ -5,8 +5,8 @@
       <el-scrollbar>
         <div style="width: 100%">
           <el-space>
-            <el-switch v-model="draggable" active-text="允许拖拽">  </el-switch>
-            <el-switch v-model="resizable" active-text="允许拉伸">  </el-switch>
+            <el-switch v-model="draggable" active-text="允许拖拽"> </el-switch>
+            <el-switch v-model="resizable" active-text="允许拉伸"> </el-switch>
           </el-space>
           <div v-if="false">
             <div class="layoutJSON">
@@ -19,7 +19,10 @@
               </div>
             </div>
           </div>
-          <div class="content" style="width: 80%; margin-left:auto; margin-right:auto;">
+          <div
+            class="content"
+            style="width: 80%; margin-left: auto; margin-right: auto"
+          >
             <grid-layout
               :layout="layout"
               :col-num="12"
@@ -48,7 +51,9 @@
                   :body-style="{ flex: 1, 'box-sizing': 'border-box' }"
                 >
                   <template #header>
-                    <span class="subtitle-text">{{ item.i }} : {{ picDict[item.i].name }} </span>
+                    <span class="subtitle-text"
+                      >{{ item.i }} : {{ picDict[item.i].name }}
+                    </span>
                   </template>
                   <div :ref="`chart-cont-${item.i}`" style="height: 100%">
                     <component
@@ -57,6 +62,7 @@
                       :id="'' + item.i"
                       width="100%"
                       height="100%"
+                      :info="picDict[item.i].info"
                     >
                     </component>
                   </div>
@@ -115,15 +121,165 @@ export default {
       resizable: false,
       loading: true,
       picDict: {
-        0: {comp:'patent-pie', name: '2021年2月新疆专利授权状况统计'},
-        1: {comp:'patent-line-race', name: '2020年各地州专利授权状况年累计变化'},
-        2: {comp:'patent-line', name: '新疆三种专利每月申请受理趋势变化'},
-        3: {comp:'patent-map', name: '2021年2月新疆各地州专利授权情况'},
-        4: {comp:'news-word-map', name: '市场监督新闻动态'},
-        5: {comp:'ep-distribution-pie'},
-        6: {comp:'ep-alter-line'},
-        7: {comp:'enterprise-bar'},
-      }
+        0: {
+          comp: "patent-pie",
+          name: "2021年2月新疆专利授权状况统计",
+          info: {
+            num_patent_types: [84, 901, 52],
+            num_applicants_types: [262, 546, 134, 55, 40],
+          },
+        },
+        1: {
+          comp: "patent-line-race",
+          name: "2020年各地州专利授权状况年累计变化",
+          info: {
+            time_x_label: [
+              "2020.01",
+              "2020.02",
+              "2020.03",
+              "2020.04",
+              "2020.05",
+              "2020.06",
+              "2020.07",
+              "2020.08",
+              "2020.09",
+              "2020.10",
+              "2020.11",
+              "2020.12",
+            ],
+            sum: [
+              {
+                name: "乌鲁木齐",
+                data: [
+                  1000, 1100, 1400, 1400, 2000, 2400, 3000, 3000, 4000, 4766,
+                  5315, 5332,
+                ],
+              },
+              {
+                name: "昌吉州",
+                data: [
+                  100, 110, 140, 170, 200, 240, 300, 350, 400, 476, 531, 533,
+                ],
+              },
+              {
+                name: "克拉玛依",
+                data: [
+                  55, 102, 138, 188, 246, 313, 386, 413, 457, 473, 556, 646,
+                ],
+              },
+              {
+                name: "石河子",
+                data: [
+                  20, 109, 114, 192, 208, 271, 307, 339, 350, 399, 498, 523,
+                ],
+              },
+              {
+                name: "伊犁州",
+                data: [
+                  35, 95, 141, 229, 261, 354, 396, 396, 403, 481, 518, 558,
+                ],
+              },
+              {
+                name: "博州",
+                data: [
+                  69, 96, 116, 210, 280, 301, 360, 397, 413, 489, 570, 639,
+                ],
+              },
+              {
+                name: "塔城",
+                data: [
+                  69, 96, 116, 210, 280, 301, 360, 397, 413, 489, 570, 639,
+                ],
+              },
+              {
+                name: "阿勒泰",
+                data: [25, 65, 82, 121, 129, 155, 159, 168, 195, 209, 209, 226],
+              },
+              {
+                name: "吐鲁番",
+                data: [
+                  69, 96, 116, 210, 280, 301, 360, 397, 413, 489, 570, 639,
+                ],
+              },
+              {
+                name: "哈密",
+                data: [1, 19, 21, 35, 52, 59, 67, 84, 86, 100, 117, 136],
+              },
+              {
+                name: "巴州",
+                data: [1, 19, 21, 35, 52, 59, 67, 84, 86, 100, 117, 136],
+              },
+              {
+                name: "阿克苏",
+                data: [25, 65, 82, 121, 129, 155, 159, 168, 195, 209, 209, 226],
+              },
+              {
+                name: "喀什",
+                data: [
+                  69, 96, 116, 210, 280, 301, 360, 397, 413, 489, 570, 639,
+                ],
+              },
+              {
+                name: "和田",
+                data: [1, 19, 21, 35, 52, 59, 67, 84, 86, 100, 117, 136],
+              },
+              {
+                name: "克州",
+                data: [1, 19, 21, 35, 52, 59, 67, 84, 86, 100, 117, 136],
+              },
+            ],
+          },
+        },
+        2: {
+          comp: "patent-line",
+          name: "新疆三种专利每月申请受理趋势变化",
+          info: {
+            dataset: {
+              source: [
+                [
+                  "Proportion",
+                  "2020.10",
+                  "2020.11",
+                  "2020.12",
+                  "2021.01",
+                  "2021.02",
+                  "2021.03",
+                ],
+                ["发明专利", 326, 468, 92, 59, 84, 102],
+                ["实用新型", 1390, 1670, 1077, 865, 901, 1196],
+                ["外观设计", 91, 91, 79, 50, 52, 133],
+              ],
+            },
+          },
+        },
+        3: {
+          comp: "patent-map",
+          name: "2021年2月新疆各地州专利授权情况",
+          info: {
+            num: [
+              { name: "乌鲁木齐", value: 507 },
+              { name: "昌吉州", value: 61 },
+              { name: "克拉玛依", value: 44 },
+              { name: "石河子", value: 70 },
+              { name: "伊犁州", value: 65 },
+              { name: "博州", value: 16 },
+              { name: "塔城", value: 30 },
+              { name: "阿勒泰", value: 14 },
+              { name: "吐鲁番", value: 32 },
+              { name: "哈密", value: 71 },
+              { name: "巴州", value: 47 },
+              { name: "阿克苏", value: 62 },
+              { name: "喀什", value: 36 },
+              { name: "和田", value: 9 },
+              { name: "克州", value: 4 },
+            ],
+          },
+        },
+        4: { comp: "news-word-map", name: "市场监督新闻动态" },
+        5: { comp: "ep-distribution-pie" },
+        6: { comp: "ep-alter-line" },
+        7: { comp: "enterprise-bar" },
+      },
     };
   },
   mounted() {
@@ -135,11 +291,11 @@ export default {
       });
     });
     setTimeout(() => {
-      for(const i in this.picDict){
+      for (const i in this.picDict) {
         this.$refs[`chart-${i}`].chart.resize();
         this.loading = false;
       }
-    }, 1200)
+    }, 1200);
   },
   methods: {
     handleResize(i) {
@@ -246,7 +402,7 @@ body {
   cursor: pointer;
 }
 
-.subtitle-text{
+.subtitle-text {
   font-size: 16px;
   font-weight: 700;
 }

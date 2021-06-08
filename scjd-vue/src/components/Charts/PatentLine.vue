@@ -3,6 +3,33 @@
 </template>
 
 <script>
+/*
+  组件名：PatentLine
+  功能：一年中新疆全省三种专利每月申请受理趋势变化
+  接收参数：
+    calssName: echarts挂载的div的class
+    id：echarts挂载的div的id
+    width,height为div的尺寸
+    info：绘图所必须的数据，用对象的方式存储
+      接受数据格式为
+            dataset: {
+              source: [
+                [
+                  "Proportion",
+                  "2020.10",
+                  "2020.11",
+                  "2020.12",
+                  "2021.01",
+                  "2021.02",
+                  "2021.03",
+                ],
+                ["发明专利", 326, 468, 92, 59, 84, 102],
+                ["实用新型", 1390, 1670, 1077, 865, 901, 1196],
+                ["外观设计", 91, 91, 79, 50, 52, 133],
+              ],
+            }
+      
+*/
 const echarts = require("echarts/lib/echarts");
 require("echarts/lib/component/dataset");
 require("echarts/lib/component/tooltip");
@@ -32,6 +59,9 @@ export default {
       type: String,
       default: "200px",
     },
+    info: {
+      type: Object,
+    },
   },
   data() {
     return {
@@ -39,7 +69,7 @@ export default {
     };
   },
   mounted() {
-    this.initChart();
+    this.initChart(this.info);
   },
   // vue3.x版本要修改beforeDestroy()为 beforeUnmount()
   beforeUnmount() {
@@ -50,7 +80,7 @@ export default {
     this.chart = null;
   },
   methods: {
-    initChart() {
+    initChart(info) {
       var chartDom = document.getElementById(this.id);
       var myChart = echarts.init(chartDom);
       var option;
@@ -62,22 +92,7 @@ export default {
             trigger: "axis",
             showContent: false,
           },
-          dataset: {
-            source: [
-              [
-                "Proportion",
-                "2020.10",
-                "2020.11",
-                "2020.12",
-                "2021.01",
-                "2021.02",
-                "2021.03",
-              ],
-              ["发明专利", 326, 468, 92, 59, 84, 102],
-              ["实用新型", 1390, 1670, 1077, 865, 901, 1196],
-              ["外观设计", 91, 91, 79, 50, 52, 133],
-            ],
-          },
+          dataset: info.dataset,
           xAxis: { type: "category" },
           yAxis: { gridIndex: 0 },
           grid: { top: "55%" },

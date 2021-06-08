@@ -10,6 +10,9 @@ export default {
   props: {
     height: String,
     width: String,
+    info: {
+      type: Object,
+    },
   },
   data() {
     return {

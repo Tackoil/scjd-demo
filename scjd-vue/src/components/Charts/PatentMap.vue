@@ -3,6 +3,33 @@
 </template>
 
 <script>
+/*
+  组件名：PatentMap
+  功能：展示某一个月新疆各地州专利授权月合计数量
+  接收参数：
+    calssName: echarts挂载的div的class
+    id：echarts挂载的div的id
+    width,height为div的尺寸
+    info：绘图所必须的数据，用对象的方式存储
+      接受数据格式为
+      num: [
+              { name: "乌鲁木齐", value: 476 },
+              { name: "昌吉州", value: 6100 },
+              { name: "克拉玛依", value: 44 },
+              { name: "石河子", value: 70 },
+              { name: "伊犁州", value: 65 },
+              { name: "博州", value: 16 },
+              { name: "塔城", value: 30 },
+              { name: "阿勒泰", value: 14 },
+              { name: "吐鲁番", value: 32 },
+              { name: "哈密", value: 71 },
+              { name: "巴州", value: 47 },
+              { name: "阿克苏", value: 62 },
+              { name: "喀什", value: 36 },
+              { name: "和田", value: 9 },
+              { name: "克州", value: 4 },
+            ],
+  */
 const echarts = require("echarts/lib/echarts");
 require("echarts/lib/component/title");
 require("echarts/lib/component/toolbox");
@@ -31,6 +58,9 @@ export default {
       type: String,
       default: "200px",
     },
+    info: {
+      type: Object
+    }
   },
   data() {
     return {
@@ -40,7 +70,7 @@ export default {
     };
   },
   mounted() {
-    this.initChart();
+    this.initChart(this.info);
   },
   beforeUnmount() {
     if (!this.chart) {
@@ -50,7 +80,7 @@ export default {
     this.chart = null;
   },
   methods: {
-    initChart() {
+    initChart(info) {
       echarts.registerMap("XJ", this.xjJson);
       this.chart = echarts.init(document.getElementById(this.id));
       this.chart.setOption({
@@ -94,23 +124,7 @@ export default {
               show: true,
             },
             // 这里可以修改为从父组件传来的数据
-            data: [
-              { name: "乌鲁木齐", value: 476 },
-              { name: "昌吉州", value: 61 },
-              { name: "克拉玛依", value: 44 },
-              { name: "石河子", value: 70 },
-              { name: "伊犁州", value: 65 },
-              { name: "博州", value: 16 },
-              { name: "塔城", value: 30 },
-              { name: "阿勒泰", value: 14 },
-              { name: "吐鲁番", value: 32 },
-              { name: "哈密", value: 71 },
-              { name: "巴州", value: 47 },
-              { name: "阿克苏", value: 62 },
-              { name: "喀什", value: 36 },
-              { name: "和田", value: 9 },
-              { name: "克州", value: 4 },
-            ],
+            data: info.num,
             // 自定义名称映射
             // 左边为json文件中的数据名
             // 目前缺少建设兵团的数据
