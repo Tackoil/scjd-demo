@@ -49,6 +49,14 @@ export default {
       chart: null,
     };
   },
+  watch: {
+      info: {
+        handler(value) {
+          this.initChart(value);
+        },
+        deep: true//深度监听
+      }
+    },
   mounted() {
     this.initChart(this.info);
   },
