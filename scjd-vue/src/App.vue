@@ -86,6 +86,8 @@ import EnterpriseBar from "@/components/EnterpriseCharts/EnterpriseBar";
 import EpDistributionPie from "@/components/EnterpriseCharts/EpDistributionPie";
 import EpAlterLine from "@/components/EnterpriseCharts/EpAlterLine";
 
+import {getPatentPie} from "@/utils/connector.js"
+
 var elementResizeDetectorMaker = require("element-resize-detector");
 var erd = elementResizeDetectorMaker({ strategy: "scroll" });
 
@@ -125,9 +127,10 @@ export default {
           comp: "patent-pie",
           name: "2021年2月新疆专利授权状况统计",
           info: {
-            num_patent_types: [84, 901, 52],
-            num_applicants_types: [262, 546, 134, 55, 40],
+            num_patent_types: [],
+            num_applicants_types: [],
           },
+          fetch: getPatentPie
         },
         1: {
           comp: "patent-line-race",
@@ -283,6 +286,7 @@ export default {
     };
   },
   mounted() {
+    this.fetchAllData()
     this.layout.map((item) => {
       erd.listenTo(this.$refs[`chart-cont-${item.i}`], () => {
         this.$nextTick(() => {
@@ -296,11 +300,20 @@ export default {
         this.loading = false;
       }
     }, 1200);
+    setInterval(this.fetchAllData, 60000)
   },
   methods: {
     handleResize(i) {
       this.$refs[`chart-${i}`].chart.resize();
     },
+    fetchAllData() {
+      for(const index in this.picDict){
+        if(this.picDict[index].fetch){
+          this.picDict[index].fetch()
+            .then(info => this.picDict[index].info = info)
+        }
+      }
+    }
   },
   created() {
     this.deHandleResize = _.debounce(this.handleResize, 200);

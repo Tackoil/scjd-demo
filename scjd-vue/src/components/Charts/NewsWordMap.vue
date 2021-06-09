@@ -4,9 +4,11 @@
 
 <script>
 import WordCloud from "wordcloud";
+import resize from "./mixins/resize";
 
 export default {
   name: "NewsWordMap",
+  mixins: [resize],
   props: {
     height: String,
     width: String,

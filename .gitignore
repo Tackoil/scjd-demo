@@ -1,2 +1,7 @@
 
 scjd-vue/package-lock.json
+pa/doc.json
+.gitignore
+scjd-vue/package-lock.json
+*.pyc
+scjd_django/db.sqlite3

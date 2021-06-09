@@ -7,7 +7,7 @@
   组件名：PatentLine
   功能：一年中新疆全省三种专利每月申请受理趋势变化
   接收参数：
-    calssName: echarts挂载的div的class
+    className: echarts挂载的div的class
     id：echarts挂载的div的id
     width,height为div的尺寸
     info：绘图所必须的数据，用对象的方式存储

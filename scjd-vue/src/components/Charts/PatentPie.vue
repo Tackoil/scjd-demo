@@ -7,7 +7,7 @@
   组件名：PatentMap
   功能：复合展示某一个月新疆全省专利授权的专利类型和申请人类型
   接收参数：
-    calssName: echarts挂载的div的class
+    className: echarts挂载的div的class
     id：echarts挂载的div的id
     width,height为div的尺寸
     info：绘图所必须的数据，用对象的方式存储
