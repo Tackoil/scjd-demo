@@ -40,7 +40,7 @@ require("echarts/lib/component/geo");
 import resize from "./mixins/resize";
 
 export default {
-    mixins: [resize],
+  mixins: [resize],
   props: {
     className: {
       type: String,
@@ -59,8 +59,8 @@ export default {
       default: "200px",
     },
     info: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
@@ -68,6 +68,14 @@ export default {
       // 读取本地geoJson格式文件
       xjJson: require("@/assets/geojson/XJ.json"),
     };
+  },
+  watch: {
+    info: {
+      handler(value) {
+        this.initChart(value);
+      },
+      deep: true, //深度监听
+    },
   },
   mounted() {
     this.initChart(this.info);
