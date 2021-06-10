@@ -1,6 +1,20 @@
 import json
+import random
 
 from django.http import HttpResponse
+
+
+def random_distort(res):
+    if isinstance(res, dict):
+        for key in res:
+            res[key] = random_distort(res[key])
+    elif isinstance(res, list):
+        for item in range(len(res)):
+            res[item] = random_distort(res[item])
+    elif isinstance(res, int):
+        delta_max = int(res * 0.1)
+        res = res + random.randint(-1 * delta_max, delta_max)
+    return res
 
 
 def patent_pie(request):
@@ -9,6 +23,7 @@ def patent_pie(request):
             "num_patent_types": [84, 901, 52],
             "num_applicants_types": [262, 546, 134, 55, 40],
         }
+        res = random_distort(res)
         res = json.dumps(res)
         return HttpResponse(res)
 
@@ -112,6 +127,7 @@ def patent_line_race(request):
                 },
             ],
         }
+        res = random_distort(res)
         res = json.dumps(res)
         return HttpResponse(res)
 
@@ -136,6 +152,7 @@ def patent_line(request):
                 ],
             },
         }
+        res = random_distort(res)
         res = json.dumps(res)
         return HttpResponse(res)
 
@@ -161,5 +178,33 @@ def patent_map(request):
                 {"name": "克州", "value": 4},
             ],
         }
+        res = random_distort(res)
+        res = json.dumps(res)
+        return HttpResponse(res)
+
+
+def news_word_map(request):
+    if request.method == "GET":
+        res = [
+            ["工作", 76],
+            ["发展", 68],
+            ["质量", 61],
+            ["文化", 56],
+            ["党史", 48],
+            ["企业", 47],
+            ["学习", 46],
+            ["会议", 44],
+            ["润疆", 43],
+            ["质量奖", 39],
+            ["教育", 37],
+            ["气象", 34],
+            ["开展", 32],
+            ["坚持", 28],
+            ["深入", 26],
+            ["能源", 25],
+            ["服务", 25],
+            ["组织", 25],
+        ]
+        res = random_distort(res)
         res = json.dumps(res)
         return HttpResponse(res)

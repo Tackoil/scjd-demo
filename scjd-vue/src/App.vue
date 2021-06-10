@@ -86,7 +86,7 @@ import EnterpriseBar from "@/components/EnterpriseCharts/EnterpriseBar";
 import EpDistributionPie from "@/components/EnterpriseCharts/EpDistributionPie";
 import EpAlterLine from "@/components/EnterpriseCharts/EpAlterLine";
 
-import {getPatentPie, getPatentLineRace, getPatentLine, getPatentMap} from "@/utils/connector.js"
+import {getPatentPie, getPatentLineRace, getPatentLine, getPatentMap, getNewsWordMap} from "@/utils/connector.js"
 
 var elementResizeDetectorMaker = require("element-resize-detector");
 var erd = elementResizeDetectorMaker({ strategy: "scroll" });
@@ -159,7 +159,12 @@ export default {
           },
           fetch: getPatentMap
         },
-        4: { comp: "news-word-map", name: "市场监督新闻动态" },
+        4: { 
+          comp: "news-word-map", 
+          name: "市场监督新闻动态",
+          info: [],
+          fetch: getNewsWordMap 
+        },
         5: { comp: "ep-distribution-pie" },
         6: { comp: "ep-alter-line" },
         7: { comp: "enterprise-bar" },
@@ -177,7 +182,7 @@ export default {
     });
     setTimeout(() => {
       for (const i in this.picDict) {
-        this.$refs[`chart-${i}`].chart.resize();
+        this.$refs[`chart-${i}`].chart?.resize();
         this.loading = false;
       }
     }, 1200);

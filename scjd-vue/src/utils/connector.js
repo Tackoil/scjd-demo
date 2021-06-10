@@ -51,3 +51,16 @@ export async function getPatentMap(){
             })
     return info
 }
+
+
+export async function getNewsWordMap(){
+    var info = undefined
+    await axios.get(`${baseurl}/news-word-map/`)
+            .then(function(response){
+                info = response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    return info
+}
