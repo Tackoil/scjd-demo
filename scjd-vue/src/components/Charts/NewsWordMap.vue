@@ -62,7 +62,12 @@ export default {
         maxRotation: 0,
         minRotation: 0,
         fontWeight: 300,
-        classes: "web-font"
+        classes: "web-font",
+        click: (item) => {
+          const encoded = encodeURIComponent(encodeURIComponent(item[0]))
+          const target = `http://scjgj.xinjiang.gov.cn/guestweb5/html/searchResult.html?column=%25E5%2585%25A8%25E9%2583%25A8&uc=1&searchWord=${encoded}&siteCode=65BM060002`
+          window.open(target); 
+        },
       });
     },
   },

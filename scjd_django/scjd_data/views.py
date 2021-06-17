@@ -12,7 +12,7 @@ def random_distort(res):
         for item in range(len(res)):
             res[item] = random_distort(res[item])
     elif isinstance(res, int):
-        delta_max = int(res * 0.1)
+        delta_max = int(res * 0.3)
         res = res + random.randint(-1 * delta_max, delta_max)
     return res
 

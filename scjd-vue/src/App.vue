@@ -1,7 +1,7 @@
 <template>
   <el-container style="height: 100vh">
     <el-header height="70px">新疆市场监督管理局大数据平台</el-header>
-    <el-main v-loading="loading">
+    <el-main v-loading="loading" style="padding-bottom: 0;">
       <el-scrollbar>
         <div style="width: 100%">
           <el-space>
@@ -244,7 +244,6 @@ body {
 
 .el-main {
   background-color: rgb(245, 248, 251);
-  padding-bottom: 0;
   overflow: hidden;
 }
 .chart-container {
