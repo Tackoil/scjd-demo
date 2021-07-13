@@ -208,3 +208,85 @@ def news_word_map(request):
         res = random_distort(res)
         res = json.dumps(res)
         return HttpResponse(res)
+
+
+def enterprise_bar(request):
+    if request.method == "GET":
+        res = {
+            "time_x_label": [
+                "2020.01", "2020.02", "2020.03", "2020.04", "2020.05", "2020.06",
+                "2020.07", "2020.08", "2020.09", "2020.10", "2020.11", "2020.12"
+            ],
+            "sum": [
+                {
+                    "name": "第一产业",
+                    "data": [1036, 1748, 1915, 2519, 2865, 2962,
+                             3693, 3810, 4298, 4323, 4675, 6209],
+                },
+                {
+                    "name": "第二产业",
+                    "data": [209, 317, 533, 844, 1019, 1155,
+                             1484, 1610, 2285, 2772, 3578, 4308],
+                },
+                {
+                    "name": "第三产业",
+                    "data": [204, 220, 327, 381, 482, 507,
+                             800, 951, 1001, 1200, 1390, 1776],
+                },
+            ],
+        }
+        res = random_distort(res)
+        res = json.dumps(res)
+        return HttpResponse(res)
+
+
+def ep_alter_line(request):
+    if request.method == "GET":
+        res = {
+            "time_x_label": [
+                "2020.01", "2020.02", "2020.03", "2020.04", "2020.05", "2020.06",
+                "2020.07", "2020.08", "2020.09", "2020.10", "2020.11", "2020.12"
+            ],
+            "sum": [
+                {
+                    "name": "注册",
+                    "data": [1036, 1748, 1915, 2519, 2865, 2962,
+                             3693, 3810, 4298, 4323, 4675, 6209, ],
+                },
+                {
+                    "name": "变更",
+                    "data": [1155, 844, 2285, 2772, 317, 533,
+                             1610, 209, 3578, 1484, 4308, 1019],
+                },
+                {
+                    "name": "注销",
+                    "data": [482, 220, 1200, 381, 951, 1001,
+                             204, 1390, 507, 800, 1776, 327,
+                             ],
+                },
+            ],
+        }
+        res = random_distort(res)
+        res = json.dumps(res)
+        return HttpResponse(res)
+
+
+def ep_distribution_pie(request):
+    if request.method == "GET":
+        res = [
+            {"value": 42176, "name": "批发和零售业"},
+            {"value": 31663, "name": "租赁和商务服务业"},
+            {"value": 28685, "name": "建筑业"},
+            {"value": 23703, "name": "制造业"},
+            {"value": 22393, "name": "科学研究和技术服务业"},
+            {"value": 18358, "name": "农、林、牧、渔业"},
+            {"value": 16920, "name": "信息运输、电子软件业"},
+            {"value": 10095, "name": "房地产业"},
+            {"value": 9910, "name": "交通运输、仓储和邮政业"},
+            {"value": 7221, "name": "文化、体育和娱乐业"},
+            {"value": 7154, "name": "金融业"},
+            {"value": 5930, "name": "其他"},
+        ]
+        res = random_distort(res)
+        res = json.dumps(res)
+        return HttpResponse(res)
