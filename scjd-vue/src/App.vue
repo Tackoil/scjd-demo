@@ -73,4 +73,8 @@ body {
   background-color: rgb(245, 248, 251);
   overflow: hidden;
 }
+
+.el-scrollbar__view {
+  height: 100%;
+}
 </style>

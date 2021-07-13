@@ -1,11 +1,11 @@
 <template>
-  <div style="width: 100%" v-loading="loading" ref="screen">
-    <el-space>
+  <div style="width: 100%; height: 100%; display: flex; flex-flow: column;" v-loading="loading" ref="outterBox">
+    <el-space style="flex: 0">
       <el-button class="el-icon-data-line" @click="makeFullScreen"> </el-button>
       <el-switch v-model="draggable" active-text="允许拖拽"> </el-switch>
       <el-switch v-model="resizable" active-text="允许拉伸"> </el-switch>
     </el-space>
-    <div v-if="false">
+    <div v-if="true" style="flex: 0">
       <div class="layoutJSON">
         Displayed as <code>[x, y, w, h]</code>:
         <div class="columns">
@@ -16,11 +16,11 @@
         </div>
       </div>
     </div>
-    <div class="content" style="margin-left: auto; margin-right: auto">
+    <div style="margin-left: auto; margin-right: auto; width: 100%; flex-grow: 1;" ref="content" class="bg">
       <grid-layout
         :layout="layout"
-        :col-num="12"
-        :row-height="30"
+        :col-num="16"
+        :row-height="60"
         :is-draggable="draggable"
         :is-resizable="resizable"
         vertical-compact
@@ -38,11 +38,11 @@
           <el-card
             style="
               height: 100%;
-              box-sizing: border-box;
               display: flex;
+              box-sizing: border-box;
               flex-direction: column;
             "
-            :body-style="{ flex: 1, 'box-sizing': 'border-box' }"
+            :body-style="{ flex: 1 }"
           >
             <template #header>
               <span class="subtitle-text"
@@ -94,14 +94,14 @@ var erd = elementResizeDetectorMaker({ strategy: "scroll" });
 const _ = require("lodash");
 
 const testLayout = [
-  { x: 0, y: 0, w: 7, h: 16, i: 0 },
-  { x: 0, y: 30, w: 4, h: 16, i: 1 },
-  { x: 4, y: 30, w: 4, h: 16, i: 2 },
-  { x: 5, y: 16, w: 4, h: 14, i: 3 },
-  { x: 8, y: 30, w: 4, h: 16, i: 4 },
-  { x: 9, y: 16, w: 3, h: 14, i: 5 },
-  { x: 0, y: 16, w: 5, h: 14, i: 6 },
-  { x: 7, y: 0, w: 5, h: 16, i: 7 },
+  { x: 0, y: 0, w: 7, h: 9, i: 0 },
+  { x: 0, y: 9, w: 7, h: 9, i: 1 },
+  { x: 12, y: 0, w: 4, h: 7, i: 2 },
+  { x: 11, y: 14, w: 5, h: 8, i: 3 },
+  { x: 0, y: 18, w: 7, h: 4, i: 4 },
+  { x: 7, y: 14, w: 4, h: 8, i: 5 },
+  { x: 7, y: 7, w: 9, h: 6, i: 6 },
+  { x: 7, y: 0, w: 5, h: 7, i: 7 },
 ];
 
 export default {
@@ -118,6 +118,7 @@ export default {
   },
   data() {
     return {
+      fullscreen: false,
       layout: JSON.parse(JSON.stringify(testLayout)),
       draggable: false,
       resizable: false,
@@ -194,7 +195,7 @@ export default {
   },
   mounted() {
     this.fetchAllData();
-    this.layout.map((item) => {
+    this.layout.forEach((item) => {
       erd.listenTo(this.$refs[`chart-cont-${item.i}`], () => {
         this.$nextTick(() => {
           this.deHandleResize(item.i);
@@ -223,8 +224,8 @@ export default {
       }
     },
     makeFullScreen() {
-      console.log("did");
-      const fullarea = this.$refs["screen"];
+      this.fullscreen = true;
+      const fullarea = this.$refs["content"];
       if (fullarea.requestFullscreen) {
         fullarea.requestFullscreen();
       } else if (fullarea.webkitRequestFullScreen) {
@@ -248,6 +249,10 @@ export default {
 
 
 <style>
+.bg {
+  background-color: rgb(245, 248, 251);
+}
+
 .chart-container {
   position: relative;
   width: 100%;
