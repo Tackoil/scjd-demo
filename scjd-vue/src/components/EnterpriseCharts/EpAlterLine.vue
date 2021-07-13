@@ -3,6 +3,36 @@
 </template>
 
 <script>
+/*
+  组件名：EpAlterLine
+  功能：展示十二个月内企业注册、变更、注销数目变化情况
+  接收参数：info
+      接受数据格式为
+      var info = {
+          time_x_label: [ 
+            "2020.01","2020.02","2020.03","2020.04","2020.05","2020.06",
+            "2020.07","2020.08","2020.09","2020.10","2020.11","2020.12"
+          ],
+          sum: [
+            {
+              name: "注册",
+              data: [1036, 1748, 1915, 2519, 2865, 2962, 
+                3693, 3810, 4298, 4323, 4675,6209,],
+            },
+            {
+              name: "变更",
+              data: [1155, 844, 2285, 2772, 317, 533, 
+                1610, 209, 3578, 1484, 4308,1019],
+            },
+            {
+              name: "注销",
+              data: [482, 220, 1200, 381, 951, 1001, 
+                204, 1390, 507, 800, 1776, 327,
+              ],
+            },
+          ],
+        }
+*/
 const echarts = require("echarts/lib/echarts");
 require("echarts/lib/component/title");
 require("echarts/lib/component/toolbox");
@@ -41,10 +71,17 @@ export default {
       chart: null,
     };
   },
-  mounted() {
-    this.initChart();
+  watch: {
+    info: {
+      handler(value) {
+        this.initChart(value);
+      },
+      deep: true, //深度监听
+    },
   },
-
+  mounted() {
+    this.initChart(this.info);
+  },
   beforeUnmount() {
     if (!this.chart) {
       return;
@@ -53,26 +90,54 @@ export default {
     this.chart = null;
   },
   methods: {
-    initChart() {
+    initChart(info) {
       var chartDom = document.getElementById(this.id);
       var myChart = echarts.init(chartDom);
       var option;
 
-      option = {
-        title: {
-          text: "企业注册、变更、注销统计",
-          x: "20",
-          top: "20",
-          textStyle: {
-            color: "#000",
-            fontSize: "22",
+      
+      /*
+      var info = {
+        time_x_label: [ 
+          "2020.01","2020.02","2020.03","2020.04","2020.05","2020.06",
+          "2020.07","2020.08","2020.09","2020.10","2020.11","2020.12"
+        ],
+        sum: [
+          {
+            name: "注册",
+            data: [1036, 1748, 1915, 2519, 2865, 2962, 
+              3693, 3810, 4298, 4323, 4675,6209,],
           },
-          subtextStyle: {
-            color: "#90979c",
-            fontSize: "16",
+          {
+            name: "变更",
+            data: [1155, 844, 2285, 2772, 317, 533, 
+              1610, 209, 3578, 1484, 4308,1019],
           },
-        },
+          {
+            name: "注销",
+            data: [482, 220, 1200, 381, 951, 1001, 
+              204, 1390, 507, 800, 1776, 327,
+            ],
+          },
+        ],
+      }
+      */
 
+      var series = [];
+      for (var i = 0; i < info.sum.length; i++) {
+        series.push({
+          name: info.sum[i].name,
+          type: "line",
+          stack: "期末总户数",
+          itemStyle: {
+            smooth: true,
+          },
+          animationDuration: 2800,
+          animationEasing: "cubicInOut",
+          data: info.sum[i].data,
+        });
+      }
+      option = {
         tooltip: {
           trigger: "axis",
           axisPointer: {
@@ -85,25 +150,18 @@ export default {
 
         legend: {
           x: "5%",
-          top: "10%",
           textStyle: {
             color: "#90979c",
           },
           data: ["注册", "变更", "注销"],
         },
 
-        calculable: false,
-
         grid: {
           left: "5%",
           right: "5%",
           borderWidth: 0,
-          top: 150,
-          bottom: 95,
+          top: "10%",
           containLabel: true,
-          textStyle: {
-            color: "#000",
-          },
         },
 
         toolbox: {
@@ -116,37 +174,7 @@ export default {
         xAxis: [
           {
             type: "category",
-            axisLine: {
-              lineStyle: {
-                color: "#696969",
-              },
-            },
-            splitLine: {
-              show: false,
-            },
-            axisTick: {
-              show: false,
-            },
-            splitArea: {
-              show: false,
-            },
-            axisLabel: {
-              interval: 0,
-            },
-            data: [
-              "2020.01",
-              "2020.02",
-              "2020.03",
-              "2020.04",
-              "2020.05",
-              "2020.06",
-              "2020.07",
-              "2020.08",
-              "2020.09",
-              "2020.10",
-              "2020.11",
-              "2020.12",
-            ],
+            data:info.time_x_label,
           },
         ],
 
@@ -201,76 +229,7 @@ export default {
           },
         ],
 
-        series: [
-          {
-            name: "注册",
-            type: "line",
-            stack: "期末总户数",
-            barMaxWidth: 35,
-            itemStyle: {
-              normal: {
-                color: "#FF005A",
-                lineStyle: {
-                  color: "#FF005A",
-                  width: 2,
-                },
-              },
-              smooth: true,
-              type: "line",
-              animationDuration: 2800,
-              animationEasing: "cubicInOut",
-            },
-            data: [
-              1036, 1748, 1915, 2519, 2865, 2962, 3693, 3810, 4298, 4323, 4675,
-              6209,
-            ],
-          },
-          {
-            name: "变更",
-            type: "line",
-            stack: "期末总户数",
-            barMaxWidth: 35,
-            itemStyle: {
-              normal: {
-                color: "#3888fa",
-                lineStyle: {
-                  color: "#3888fa",
-                  width: 2,
-                },
-              },
-              smooth: true,
-              type: "line",
-              animationDuration: 2800,
-              animationEasing: "cubicInOut",
-            },
-            data: [
-              1155, 844, 2285, 2772, 317, 533, 1610, 209, 3578, 1484, 4308,
-              1019,
-            ],
-          },
-          {
-            name: "注销",
-            type: "line",
-            stack: "期末总户数",
-            barMaxWidth: 35,
-            itemStyle: {
-              normal: {
-                color: "#DAA520",
-                lineStyle: {
-                  color: "#DAA520",
-                  width: 2,
-                },
-              },
-              smooth: true,
-              type: "line",
-              animationDuration: 2800,
-              animationEasing: "cubicInOut",
-            },
-            data: [
-              482, 220, 1200, 381, 951, 1001, 204, 1390, 507, 800, 1776, 327,
-            ],
-          },
-        ],
+        series: series,
       };
 
       option && myChart.setOption(option);

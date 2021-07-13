@@ -3,6 +3,35 @@
 </template>
 
 <script>
+/*
+  组件名：EnterpriseBar
+  功能：展示十二个月内各类市场主体变化情况
+  接收参数：info
+      接受数据格式为
+      var info = {
+        time_x_label: [ 
+          "2020.01","2020.02","2020.03","2020.04","2020.05","2020.06",
+          "2020.07","2020.08","2020.09","2020.10","2020.11","2020.12"
+        ],
+        sum: [
+          {
+            name: "第一产业",
+            data: [1036, 1748, 1915, 2519, 2865, 2962,
+              3693, 3810, 4298, 4323, 4675,6209],
+          },
+          {
+            name: "第二产业",
+            data: [209, 317, 533, 844, 1019, 1155, 
+            1484, 1610, 2285, 2772, 3578,4308],
+          },
+          {
+            name: "第三产业",
+            data: [204, 220, 327, 381, 482, 507,
+              800, 951, 1001, 1200, 1390, 1776],
+          },
+        ],
+      }
+*/
 const echarts = require("echarts/lib/echarts");
 require("echarts/lib/component/title");
 require("echarts/lib/component/toolbox");
@@ -41,10 +70,17 @@ export default {
       chart: null,
     };
   },
-  mounted() {
-    this.initChart();
+  watch: {
+    info: {
+      handler(value) {
+        this.initChart(value);
+      },
+      deep: true, //深度监听
+    },
   },
-  // vue3.x版本要修改beforeDestroy()为 beforeUnmount()
+  mounted() {
+    this.initChart(this.info);
+  },
   beforeUnmount() {
     if (!this.chart) {
       return;
@@ -53,59 +89,80 @@ export default {
     this.chart = null;
   },
   methods: {
-    initChart() {
+    initChart(info) {
       var chartDom = document.getElementById(this.id);
       var myChart = echarts.init(chartDom);
       var option;
 
+      /*
+      var info = {
+        time_x_label: [ 
+          "2020.01","2020.02","2020.03","2020.04","2020.05","2020.06",
+          "2020.07","2020.08","2020.09","2020.10","2020.11","2020.12"
+        ],
+        sum: [
+          {
+            name: "第一产业",
+            data: [1036, 1748, 1915, 2519, 2865, 2962,
+              3693, 3810, 4298, 4323, 4675,6209],
+          },
+          {
+            name: "第二产业",
+            data: [209, 317, 533, 844, 1019, 1155, 
+            1484, 1610, 2285, 2772, 3578,4308],
+          },
+          {
+            name: "第三产业",
+            data: [204, 220, 327, 381, 482, 507,
+              800, 951, 1001, 1200, 1390, 1776],
+          },
+        ],
+      }
+      */
+
+      var series = [];
+
+      for (var i = 0; i < info.sum.length; i++) {
+        series.push({
+          name: info.sum[i].name,
+          type: "bar",
+          stack: "期末总户数",
+          itemStyle: {
+            normal: {
+              label: {
+                show: true,
+                position: "insideTop",
+              },
+            }
+          },
+          data: info.sum[i].data,
+        });
+      }
+      
       option = {
-        backgroundColor: "#344b58",
-
-        title: {
-          text: "市场主体产业变化情况",
-          x: "20",
-          top: "20",
-          textStyle: {
-            color: "#000",
-            fontSize: "22",
-          },
-          subtextStyle: {
-            color: "#90979c",
-            fontSize: "16",
-          },
-        },
-
         tooltip: {
           trigger: "axis",
           axisPointer: {
+            type: "cross",
             textStyle: {
               color: "#fff",
             },
           },
         },
-
         legend: {
-          x: "5%",
-          top: "10%",
+          x: "2%",
           textStyle: {
             color: "#90979c",
           },
           data: ["第一产业", "第二产业", "第三产业"],
         },
-
-        calculable: true,
-
         grid: {
           left: "5%",
           right: "5%",
           borderWidth: 0,
-          top: 150,
-          bottom: 95,
-          textStyle: {
-            color: "#fff",
-          },
+          top: "10%",
+          bottom: "30%",
         },
-
         toolbox: {
           right: 10,
           show: true,
@@ -116,62 +173,12 @@ export default {
         xAxis: [
           {
             type: "category",
-            axisLine: {
-              lineStyle: {
-                color: "#90979c",
-              },
-            },
-            splitLine: {
-              show: false,
-            },
-            axisTick: {
-              show: false,
-            },
-            splitArea: {
-              show: false,
-            },
-            axisLabel: {
-              interval: 0,
-            },
-            data: [
-              "2020.01",
-              "2020.02",
-              "2020.03",
-              "2020.04",
-              "2020.05",
-              "2020.06",
-              "2020.07",
-              "2020.08",
-              "2020.09",
-              "2020.10",
-              "2020.11",
-              "2020.12",
-            ],
+            data: info.time_x_label,
           },
         ],
-
-        yAxis: [
-          {
-            type: "value",
-            splitLine: {
-              show: false,
-            },
-            axisLine: {
-              lineStyle: {
-                color: "#90979c",
-              },
-            },
-            axisTick: {
-              show: false,
-            },
-            axisLabel: {
-              interval: 0,
-            },
-            splitArea: {
-              show: false,
-            },
-          },
-        ],
+        yAxis: {
+          type: "value",
+        },
 
         dataZoom: [
           {
@@ -201,86 +208,11 @@ export default {
           },
         ],
 
-        series: [
-          {
-            name: "第一产业",
-            type: "bar",
-            stack: "期末总户数",
-            barMaxWidth: 35,
-            barGap: "10%",
-            itemStyle: {
-              normal: {
-                color: "rgba(255,144,128,1)",
-                label: {
-                  show: true,
-                  textStyle: {
-                    color: "#fff",
-                  },
-                  position: "insideTop",
-                  formatter(p) {
-                    return p.value > 0 ? p.value : "";
-                  },
-                },
-              },
-            },
-            data: [
-              1036, 1748, 1915, 2519, 2865, 2962, 3693, 3810, 4298, 4323, 4675,
-              6209,
-            ],
-          },
-          {
-            name: "第二产业",
-            type: "bar",
-            stack: "期末总户数",
-            itemStyle: {
-              normal: {
-                color: "rgba(0,191,183,1)",
-                barBorderRadius: 0,
-                label: {
-                  show: true,
-                  position: "insidetop",
-                  formatter(p) {
-                    return p.value > 0 ? p.value : "";
-                  },
-                },
-              },
-            },
-            data: [
-              209, 317, 533, 844, 1019, 1155, 1484, 1610, 2285, 2772, 3578,
-              4308,
-            ],
-          },
-          {
-            name: "第三产业",
-            type: "bar",
-            stack: "期末总户数",
-            symbolSize: 10,
-            symbol: "circle",
-            itemStyle: {
-              normal: {
-                color: "rgba(252,230,48,1)",
-                barBorderRadius: 0,
-                label: {
-                  show: true,
-                  position: "top",
-                  formatter(p) {
-                    return p.value > 0 ? p.value : "";
-                  },
-                },
-              },
-            },
-            data: [
-              204, 220, 327, 381, 482, 507, 800, 951, 1001, 1200, 1390, 1776,
-            ],
-          },
-        ],
+        series: series,
       };
 
       option && myChart.setOption(option);
       this.chart = myChart;
-      window.onresize = function () {
-        this.chart.resize();
-      };
     },
   },
 };

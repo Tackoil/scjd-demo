@@ -64,3 +64,39 @@ export async function getNewsWordMap(){
             })
     return info
 }
+
+export async function getEnterpriseBar(){
+    var info = undefined
+    await axios.get(`${baseurl}/enterprise-bar/`)
+            .then(function(response){
+                info = response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    return info
+}
+
+export async function getEpAlterLine(){
+    var info = undefined
+    await axios.get(`${baseurl}/ep-alter-line/`)
+            .then(function(response){
+                info = response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    return info
+}
+
+export async function getEpDistributionPie(){
+    var info = undefined
+    await axios.get(`${baseurl}/ep-distribution-pie/`)
+            .then(function(response){
+                info = response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    return info
+}

@@ -83,6 +83,9 @@ import {
   getPatentLine,
   getPatentMap,
   getNewsWordMap,
+  getEnterpriseBar,
+  getEpAlterLine,
+  getEpDistributionPie,
 } from "@/utils/connector.js";
 
 var elementResizeDetectorMaker = require("element-resize-detector");
@@ -162,9 +165,30 @@ export default {
           info: [],
           fetch: getNewsWordMap,
         },
-        5: { comp: "ep-distribution-pie" },
-        6: { comp: "ep-alter-line" },
-        7: { comp: "enterprise-bar" },
+        5: { 
+          comp: "ep-distribution-pie",
+          name: "各行业企业分布情况",
+          info: [],
+          fetch: getEpDistributionPie,
+        },
+        6: { 
+          comp: "ep-alter-line",
+          name: "企业注册、变更、注销统计",
+          info: {
+            time_x_label: [],
+            sum: [],
+          },
+          fetch: getEpAlterLine,
+        },
+        7: { 
+          comp: "enterprise-bar",
+          name: "市场主体产业数目变化",
+          info: {
+            time_x_label: [],
+            sum: [],
+          },
+          fetch: getEnterpriseBar,
+        },
       },
     };
   },
