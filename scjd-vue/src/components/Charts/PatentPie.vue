@@ -80,6 +80,17 @@ export default {
           // d: 百分比
           formatter: "{a} <br/>{b}: {c} ({d}%)",
         },
+        toolbox: {
+          show: true,
+          orient: "vertical",
+          left: "right",
+          top: "center",
+          feature: {
+            dataView: { readOnly: false },
+            restore: {},
+            saveAsImage: {},
+          },
+        },
         legend: {
           data: [
             "发明专利",

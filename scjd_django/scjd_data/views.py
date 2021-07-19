@@ -1,7 +1,12 @@
 import json
 import random
-
+import os
+import uuid
+from rest_framework.views import APIView
+from rest_framework import status
+from scjd_django import settings
 from django.http import HttpResponse
+from django.http import JsonResponse
 
 
 def random_distort(res):
@@ -290,3 +295,79 @@ def ep_distribution_pie(request):
         res = random_distort(res)
         res = json.dumps(res)
         return HttpResponse(res)
+
+
+def upload(request):
+    """上传文件"""
+    # 获取相对路径
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if request.method == 'POST':
+        file = request.FILES.get('file', None)
+        # 设置文件上传文件夹
+        head_path = BASE_DIR + "\\upload\\json"
+        print("head_path", head_path)
+        # 判断是否存在文件夹, 如果没有就创建文件路径
+        if not os.path.exists(head_path):
+            os.makedirs(head_path)
+        file_suffix = file.name.split(".")[1]  # 获取文件后缀
+        # 储存路径
+        file_path = head_path + "\\{}".format("head." + file_suffix)
+        file_path = file_path.replace(" ", "")
+        # 上传文件
+        with open(file_path, 'wb') as f:
+            for chunk in file.chunks():
+                f.write(chunk)
+
+        message = {}
+        message['code'] = 200
+        # 返回图片路径
+        message['fileurl'] = file_path
+
+        return JsonResponse(message)
+
+
+class File(APIView):
+    def post(self, request):
+        print(request.FILES)
+        # 接收文件
+        file_obj = request.FILES.get('file', None)
+        print("file_obj", file_obj.name)
+
+        # 文件上传至根目录/upload/json文件夹下
+        head_path = os.path.join(settings.BASE_DIR, 'upload/json')
+        print("head_path", head_path)
+        # 判断是否存在文件夹
+        # 如果没有就创建文件路径
+        if not os.path.exists(head_path):
+            os.makedirs(head_path)
+
+        # 判断文件大小不能超过5M
+        if file_obj.size > 5242880:
+            return JsonResponse({'status': status.HTTP_403_FORBIDDEN, 'msg': '文件过大'},
+                                status=status.HTTP_403_FORBIDDEN)
+
+        # 文件后缀
+        suffix = file_obj.name.split(".").pop()
+        print("文件后缀", suffix)
+
+        # 判断文件后缀
+        suffix_list = ["json"]
+        if suffix not in suffix_list:
+            return JsonResponse({'status': status.HTTP_403_FORBIDDEN, 'msg': '只能选择json文件'},
+                                status=status.HTTP_403_FORBIDDEN)
+
+        # 重命名文件名
+        file_name = '%s.%s' % (uuid.uuid4(), suffix)
+        print("file_name", file_name)
+        # 储存路径
+        file_path = os.path.join(head_path, file_name)
+        print("储存路径", file_path)
+
+        # 写入文件到指定路径
+        with open(file_path, 'wb') as f:
+            for chunk in file_obj.chunks():
+                f.write(chunk)
+
+        data = {}
+        data['name'] = file_name
+        return JsonResponse({'status': status.HTTP_200_OK, 'data': data}, status=status.HTTP_200_OK)

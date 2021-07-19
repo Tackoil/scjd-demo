@@ -12,4 +12,12 @@ urlpatterns = [
     path('ep-alter-line/', views.ep_alter_line),
     path('ep-distribution-pie/', views.ep_distribution_pie),
 
+    # 定义资源上传接口
+    path('api/upload/', views.upload),
+    # json文件上传接口
+    path('file/json_upload/',views.File.as_view())
+
+    # 通用资源CURD接口
+    
+
 ]
