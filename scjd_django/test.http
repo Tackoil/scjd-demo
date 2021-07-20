@@ -1,0 +1,9 @@
+@url = http://127.0.0.1:8000
+
+
+### 测试下载
+GET {{url}}/storage/files/12/download/ 
+
+
+### 获取所有图表数据
+GET {{url}}/storage/files/

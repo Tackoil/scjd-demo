@@ -1,5 +1,9 @@
 <template>
-  <div style="width: 100%; height: 100%; display: flex; flex-flow: column;" v-loading="loading" ref="outterBox">
+  <div
+    style="width: 100%; height: 100%; display: flex; flex-flow: column"
+    v-loading="loading"
+    ref="outterBox"
+  >
     <el-space style="flex: 0">
       <el-button class="el-icon-data-line" @click="makeFullScreen"> </el-button>
       <el-switch v-model="draggable" active-text="允许拖拽"> </el-switch>
@@ -16,7 +20,11 @@
         </div>
       </div>
     </div>
-    <div style="margin-left: auto; margin-right: auto; width: 100%; flex-grow: 1;" ref="content" class="bg">
+    <div
+      style="margin-left: auto; margin-right: auto; width: 100%; flex-grow: 1"
+      ref="content"
+      class="bg"
+    >
       <grid-layout
         :layout="layout"
         :col-num="16"
@@ -166,13 +174,13 @@ export default {
           info: [],
           fetch: getNewsWordMap,
         },
-        5: { 
+        5: {
           comp: "ep-distribution-pie",
           name: "各行业企业分布情况",
           info: [],
           fetch: getEpDistributionPie,
         },
-        6: { 
+        6: {
           comp: "ep-alter-line",
           name: "企业注册、变更、注销统计",
           info: {
@@ -181,7 +189,7 @@ export default {
           },
           fetch: getEpAlterLine,
         },
-        7: { 
+        7: {
           comp: "enterprise-bar",
           name: "市场主体产业数目变化",
           info: {

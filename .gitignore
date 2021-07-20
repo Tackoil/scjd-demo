@@ -5,3 +5,7 @@ pa/doc.json
 scjd-vue/package-lock.json
 *.pyc
 scjd_django/db.sqlite3
+scjd_django/uploads
+--pycache--
+**/--pycache--
+*.pyc

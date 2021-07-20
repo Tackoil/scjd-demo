@@ -17,5 +17,6 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
+    path('storage/', include('files.urls')), # 文件上传路由, 由files应用处理这类请求
     path('', include('scjd_data.urls')),
 ]
