@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
-    'files'
+    'files',
+    'scjd_data'
 ]
 
 MIDDLEWARE = [
@@ -83,6 +84,7 @@ WSGI_APPLICATION = 'scjd_django.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# 定义数据库
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

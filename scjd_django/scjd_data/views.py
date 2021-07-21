@@ -7,7 +7,7 @@ from rest_framework import status
 from scjd_django import settings
 from django.http import HttpResponse
 from django.http import JsonResponse
-
+from scjd_data.models import EpDistributionPieData,NewsWordMapData
 
 def random_distort(res):
     if isinstance(res, dict):
@@ -164,25 +164,34 @@ def patent_line(request):
 
 def patent_map(request):
     if request.method == "GET":
-        res = {
-            "num": [
-                {"name": "乌鲁木齐", "value": 507},
-                {"name": "昌吉州", "value": 61},
-                {"name": "克拉玛依", "value": 44},
-                {"name": "石河子", "value": 70},
-                {"name": "伊犁州", "value": 65},
-                {"name": "博州", "value": 16},
-                {"name": "塔城", "value": 30},
-                {"name": "阿勒泰", "value": 14},
-                {"name": "吐鲁番", "value": 32},
-                {"name": "哈密", "value": 71},
-                {"name": "巴州", "value": 47},
-                {"name": "阿克苏", "value": 62},
-                {"name": "喀什", "value": 36},
-                {"name": "和田", "value": 9},
-                {"name": "克州", "value": 4},
-            ],
-        }
+        # res = {
+        #     "num": [
+        #         {"name": "乌鲁木齐", "value": 507},
+        #         {"name": "昌吉州", "value": 61},
+        #         {"name": "克拉玛依", "value": 44},
+        #         {"name": "石河子", "value": 70},
+        #         {"name": "伊犁州", "value": 65},
+        #         {"name": "博州", "value": 16},
+        #         {"name": "塔城", "value": 30},
+        #         {"name": "阿勒泰", "value": 14},
+        #         {"name": "吐鲁番", "value": 32},
+        #         {"name": "哈密", "value": 71},
+        #         {"name": "巴州", "value": 47},
+        #         {"name": "阿克苏", "value": 62},
+        #         {"name": "喀什", "value": 36},
+        #         {"name": "和田", "value": 9},
+        #         {"name": "克州", "value": 4},
+        #     ],
+        # }
+        ob = EpDistributionPieData.objects
+        oblist = ob.all()
+        data = []
+        for o in oblist:
+            data.append({
+                    "value": o.value,
+                    "name": o.name
+            })
+        res = {"num": data}
         res = random_distort(res)
         res = json.dumps(res)
         return HttpResponse(res)
@@ -190,26 +199,31 @@ def patent_map(request):
 
 def news_word_map(request):
     if request.method == "GET":
-        res = [
-            ["工作", 76],
-            ["发展", 68],
-            ["质量", 61],
-            ["文化", 56],
-            ["党史", 48],
-            ["企业", 47],
-            ["学习", 46],
-            ["会议", 44],
-            ["润疆", 43],
-            ["质量奖", 39],
-            ["教育", 37],
-            ["气象", 34],
-            ["开展", 32],
-            ["坚持", 28],
-            ["深入", 26],
-            ["能源", 25],
-            ["服务", 25],
-            ["组织", 25],
-        ]
+        # res = [
+        #     ["工作", 76],
+        #     ["发展", 68],
+        #     ["质量", 61],
+        #     ["文化", 56],
+        #     ["党史", 48],
+        #     ["企业", 47],
+        #     ["学习", 46],
+        #     ["会议", 44],
+        #     ["润疆", 43],
+        #     ["质量奖", 39],
+        #     ["教育", 37],
+        #     ["气象", 34],
+        #     ["开展", 32],
+        #     ["坚持", 28],
+        #     ["深入", 26],
+        #     ["能源", 25],
+        #     ["服务", 25],
+        #     ["组织", 25],
+        # ]
+        ob = NewsWordMapData.objects
+        oblist = ob.all()
+        res = []
+        for o in oblist:
+            res.append([o.word,o.value])
         res = random_distort(res)
         res = json.dumps(res)
         return HttpResponse(res)
@@ -278,20 +292,29 @@ def ep_alter_line(request):
 
 def ep_distribution_pie(request):
     if request.method == "GET":
-        res = [
-            {"value": 42176, "name": "批发和零售业"},
-            {"value": 31663, "name": "租赁和商务服务业"},
-            {"value": 28685, "name": "建筑业"},
-            {"value": 23703, "name": "制造业"},
-            {"value": 22393, "name": "科学研究和技术服务业"},
-            {"value": 18358, "name": "农、林、牧、渔业"},
-            {"value": 16920, "name": "信息运输、电子软件业"},
-            {"value": 10095, "name": "房地产业"},
-            {"value": 9910, "name": "交通运输、仓储和邮政业"},
-            {"value": 7221, "name": "文化、体育和娱乐业"},
-            {"value": 7154, "name": "金融业"},
-            {"value": 5930, "name": "其他"},
-        ]
+        # res = [
+        #     {"value": 42176, "name": "批发和零售业"},
+        #     {"value": 31663, "name": "租赁和商务服务业"},
+        #     {"value": 28685, "name": "建筑业"},
+        #     {"value": 23703, "name": "制造业"},
+        #     {"value": 22393, "name": "科学研究和技术服务业"},
+        #     {"value": 18358, "name": "农、林、牧、渔业"},
+        #     {"value": 16920, "name": "信息运输、电子软件业"},
+        #     {"value": 10095, "name": "房地产业"},
+        #     {"value": 9910, "name": "交通运输、仓储和邮政业"},
+        #     {"value": 7221, "name": "文化、体育和娱乐业"},
+        #     {"value": 7154, "name": "金融业"},
+        #     {"value": 5930, "name": "其他"},
+        # ]
+        ob = EpDistributionPieData.objects
+        oblist = ob.all()
+        res = []
+        for o in oblist:
+            res.append({
+                "value": o.value,
+                "name": o.name
+            })
+
         res = random_distort(res)
         res = json.dumps(res)
         return HttpResponse(res)
