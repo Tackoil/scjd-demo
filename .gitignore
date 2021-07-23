@@ -9,3 +9,4 @@ scjd_django/uploads
 --pycache--
 **/--pycache--
 *.pyc
+scjd_django/.idea
