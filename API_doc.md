@@ -19,15 +19,15 @@
 
   ```json
   {
-  	id: "123",
-      name: "A Name"，
-      history: [
-      	{timestamp: "时间戳，一串数字", json: "json文件的位置"},
+  	"id": "123",
+      "name": "A Name",
+      "history": [
+      	{"timestamp": "时间戳，一串数字", "json": "json文件的位置"},
   		//...
       ],
-  	type: 1, //图表类型编号，已有图表以现在的编号为准吧。
-  	display: true, //true为展示，false为不展示。新添加的放在左下角（也就是x=0，y为所有卡片的最低坐标。
-  	removable: false, //不可删除
+  	"type": 1, //图表类型编号，已有图表以现在的编号为准吧。
+  	"display": true, //true为展示，false为不展示。新添加的放在左下角（也就是x=0，y为所有卡片的最低坐标。
+  	"removable": false, //不可删除
   }
   ```
 
