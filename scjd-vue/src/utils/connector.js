@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseurl = "http://10.128.249.37:8000";
+const baseurl = "http://10.128.232.15:8000";
 
 export async function getPatentPie(){
     var info = undefined

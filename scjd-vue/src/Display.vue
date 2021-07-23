@@ -1,15 +1,12 @@
 <template>
-  <div
-    style="width: 100%; height: 100%; display: flex; flex-flow: column"
-    v-loading="loading"
-    ref="outterBox"
-  >
-    <el-space style="flex: 0">
-      <el-button class="el-icon-data-line" @click="makeFullScreen"> </el-button>
-      <el-switch v-model="draggable" active-text="允许拖拽"> </el-switch>
-      <el-switch v-model="resizable" active-text="允许拉伸"> </el-switch>
-    </el-space>
-    <div v-if="true" style="flex: 0">
+  <div style="width: 100%; height: 100%; display: flex; flex-flow: column;" v-loading="loading" ref="outterBox">
+    <div style="flex: 0; margin: 10px 10px 0 10px;">
+      <el-button 
+        :class=" edit ? 'el-icon-document-checked' : 'el-icon-edit-outline'" 
+        size="small"  
+        :type="edit ? 'success' : null" plain round @click="handleEdit"> {{edit ? " 保存 " : " 编辑模式 "}} </el-button>
+    </div>
+    <div v-if="false" style="flex: 0">
       <div class="layoutJSON">
         Displayed as <code>[x, y, w, h]</code>:
         <div class="columns">
@@ -20,17 +17,14 @@
         </div>
       </div>
     </div>
-    <div
-      style="margin-left: auto; margin-right: auto; width: 100%; flex-grow: 1"
-      ref="content"
-      class="bg"
-    >
+    <div style="margin-left: auto; margin-right: auto; width: 100%; flex-grow: 1; overflow: hidden" ref="content" class="bg">
+      <el-scrollbar >
       <grid-layout
         :layout="layout"
         :col-num="16"
         :row-height="60"
-        :is-draggable="draggable"
-        :is-resizable="resizable"
+        :is-draggable="edit"
+        :is-resizable="edit"
         vertical-compact
         :use-css-transforms="true"
       >
@@ -53,8 +47,10 @@
             :body-style="{ flex: 1 }"
           >
             <template #header>
-              <span class="subtitle-text"
-                >{{ item.i }} : {{ picDict[item.i].name }}
+              <span class="subtitle-text" style="display: flex; align-items: center"
+                > 
+                  <span style="flex: 1; font-size: 22px">{{ picDict[item.i].name }} </span>
+                <el-button v-show="edit" icon="el-icon-delete" size="mini" circle> </el-button>
               </span>
             </template>
             <div :ref="`chart-cont-${item.i}`" style="height: 100%">
@@ -71,6 +67,7 @@
           </el-card>
         </grid-item>
       </grid-layout>
+      </el-scrollbar>
     </div>
   </div>
 </template>
@@ -128,8 +125,7 @@ export default {
     return {
       fullscreen: false,
       layout: JSON.parse(JSON.stringify(testLayout)),
-      draggable: false,
-      resizable: false,
+      edit: false,
       loading: true,
       picDict: {
         0: {
@@ -231,6 +227,12 @@ export default {
         }
       }
     },
+    handleEdit(){
+      if(this.edit) {
+        // save new setting
+      }
+      this.edit = ! this.edit;
+    },
     makeFullScreen() {
       this.fullscreen = true;
       const fullarea = this.$refs["content"];
@@ -318,5 +320,9 @@ export default {
 .subtitle-text {
   font-size: 16px;
   font-weight: 700;
+}
+
+.el-scrollbar__view {
+  height: 100%;
 }
 </style>

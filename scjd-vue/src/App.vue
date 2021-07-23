@@ -18,9 +18,7 @@
         </el-menu>
       </el-aside>
       <el-main v-loading="loading" style="padding: 0; overflow: hidden">
-      <el-scrollbar>
         <router-view> </router-view>
-      </el-scrollbar>
     </el-main>
     </el-container>
   </el-container>
@@ -74,7 +72,4 @@ body {
   overflow: hidden;
 }
 
-.el-scrollbar__view {
-  height: 100%;
-}
 </style>
