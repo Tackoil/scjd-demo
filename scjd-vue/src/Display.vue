@@ -46,27 +46,46 @@
             "
             :body-style="{ flex: 1 }"
           >
-            <template #header>
-              <span class="subtitle-text" style="display: flex; align-items: center"
-                > 
-                  <span style="flex: 1; font-size: 22px">{{ picDict[item.i].name }} </span>
-                <el-button v-show="edit" icon="el-icon-delete" size="mini" circle> </el-button>
-              </span>
-            </template>
-            <div :ref="`chart-cont-${item.i}`" style="height: 100%">
-              <component
-                :is="picDict[item.i].comp"
-                :ref="`chart-${item.i}`"
-                :id="'' + item.i"
-                width="100%"
-                height="100%"
-                :info="picDict[item.i].info"
-              >
-              </component>
-            </div>
-          </el-card>
-        </grid-item>
-      </grid-layout>
+            <el-card
+              style="
+                height: 100%;
+                display: flex;
+                box-sizing: border-box;
+                flex-direction: column;
+              "
+              :body-style="{ flex: 1 }"
+            >
+              <template #header>
+                <span
+                  class="subtitle-text"
+                  style="display: flex; align-items: center"
+                >
+                  <span style="flex: 1; font-size: 22px"
+                    >{{ cardInfo[item.i]?.name }}
+                  </span>
+                  <el-button
+                    v-show="edit"
+                    icon="el-icon-delete"
+                    size="mini"
+                    circle
+                  >
+                  </el-button>
+                </span>
+              </template>
+              <div :ref="`chart-cont-${item.i}`" style="height: 100%">
+                <component
+                  :is="typeDict[cardInfo[item.i]?.type]"
+                  :ref="`chart-${item.i}`"
+                  :id="'' + item.i"
+                  width="100%"
+                  height="100%"
+                  :info="cardInfo[item.i]?.info"
+                >
+                </component>
+              </div>
+            </el-card>
+          </grid-item>
+        </grid-layout>
       </el-scrollbar>
     </div>
   </div>
@@ -126,109 +145,69 @@ export default {
       fullscreen: false,
       layout: JSON.parse(JSON.stringify(testLayout)),
       edit: false,
-      loading: true,
-      picDict: {
-        0: {
-          comp: "patent-pie",
-          name: "2021年2月新疆专利授权状况统计",
-          info: {
-            num_patent_types: [],
-            num_applicants_types: [],
-          },
-          fetch: getPatentPie,
-        },
-        1: {
-          comp: "patent-line-race",
-          name: "2020年各地州专利授权状况年累计变化",
-          info: {
-            time_x_label: [],
-            sum: [],
-          },
-          fetch: getPatentLineRace,
-        },
-        2: {
-          comp: "patent-line",
-          name: "新疆三种专利每月申请受理趋势变化",
-          info: {
-            dataset: {
-              source: [],
-            },
-          },
-          fetch: getPatentLine,
-        },
-        3: {
-          comp: "patent-map",
-          name: "2021年2月新疆各地州专利授权情况",
-          info: {
-            num: [],
-          },
-          fetch: getPatentMap,
-        },
-        4: {
-          comp: "news-word-map",
-          name: "市场监督新闻动态",
-          info: [],
-          fetch: getNewsWordMap,
-        },
-        5: {
-          comp: "ep-distribution-pie",
-          name: "各行业企业分布情况",
-          info: [],
-          fetch: getEpDistributionPie,
-        },
-        6: {
-          comp: "ep-alter-line",
-          name: "企业注册、变更、注销统计",
-          info: {
-            time_x_label: [],
-            sum: [],
-          },
-          fetch: getEpAlterLine,
-        },
-        7: {
-          comp: "enterprise-bar",
-          name: "市场主体产业数目变化",
-          info: {
-            time_x_label: [],
-            sum: [],
-          },
-          fetch: getEnterpriseBar,
-        },
+      loading: false,
+      timer: null,
+      typeDict: {
+        0: "PatentPie",
+        1: "PatentLineRace",
+        2: "PatentLine",
+        3: "PatentMap",
+        4: "EnterpriseBar",
+        5: "EpDistributionPie",
+        6: "EpAlterLine",
+        7: "NewsWordMap",
       },
     };
   },
+  created() {
+    this.throHandleResize = _.throttle(this.handleResize, 200);
+    this.fetchLayout();
+  },
   mounted() {
-    this.fetchAllData();
-    this.layout.forEach((item) => {
-      erd.listenTo(this.$refs[`chart-cont-${item.i}`], () => {
-        this.$nextTick(() => {
-          this.deHandleResize(item.i);
-        });
-      });
-    });
-    setTimeout(() => {
-      for (const i in this.picDict) {
-        this.$refs[`chart-${i}`].chart?.resize();
-        this.loading = false;
-      }
-    }, 1200);
-    setInterval(this.fetchAllData, 60000);
+    setInterval(() => {
+      this.fetchAllData();
+    }, 60000);
   },
   methods: {
+    handleLayoutReady(layout) {
+      if (layout.length) {
+        this.fetchAllData();
+        setTimeout(() => {
+          this.layout.forEach((item) => {
+            if (this.$refs[`chart-cont-${item.i}`]) {
+              erd.listenTo(this.$refs[`chart-cont-${item.i}`], () => {
+                this.$nextTick(() => {
+                  this.throHandleResize(item.i);
+                });
+              });
+            }
+            if (this.$refs[`chart-${item.i}`]) {
+              this.$refs[`chart-${item.i}`].chart?.resize();
+            }
+          });
+          this.loading = false;
+        }, 0);
+      }
+  },
     handleResize(i) {
       this.$refs[`chart-${i}`].chart.resize();
     },
-    fetchAllData() {
-      for (const index in this.picDict) {
-        if (this.picDict[index].fetch) {
-          this.picDict[index]
-            .fetch()
-            .then((info) => (this.picDict[index].info = info));
-        }
-      }
+    fetchLayout() {
+      getLayout().then((res) => {
+        this.layout = res;
+      });
     },
-    handleEdit(){
-      if(this.edit) {
+    fetchAllData() {
+      console.log("fetch!");
+      this.layout.forEach((item) => {
+        getCardByID(item.i).then((info) => {
+          this.cardInfo[item.i] = info;
+        });
+      });
+    },
+    handleEdit() {
+      if (this.edit) {
+        
         // save new setting
       }
       this.edit = ! this.edit;
