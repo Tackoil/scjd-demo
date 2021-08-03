@@ -11,4 +11,9 @@ class FilesModel(models.Model):
         db_table = 'files_storage'
         ordering = ['-id']
 
+    def __str__(self):
+        """
+        String for representing the Model object.
+        """
+        return "{}_{}".format(self.type, self.name)
 

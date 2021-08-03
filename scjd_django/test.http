@@ -1,9 +1,19 @@
 @url = http://127.0.0.1:8000
 
 
-### 测试下载
-GET {{url}}/storage/files/12/download/ 
+### 整体更新 / 部分更新
+PUT {{url}}/chart-data/charts/2/
+content-type: application/json
 
+{
+    "id": 2,
+    "name": "测试图标2_modify",
+    "type": 2,
+    "display": true,
+    "removable": false,
+    "x_coordinate": 0,
+    "y_coordinate": 0,
+    "width": 500,
+    "height": 500
+}
 
-### 获取所有图表数据
-GET {{url}}/storage/files/
