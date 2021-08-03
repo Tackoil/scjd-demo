@@ -62,7 +62,7 @@
                   style="display: flex; align-items: center"
                 >
                   <span style="flex: 1; font-size: 22px"
-                    >{{ cardInfo[item.i]?.name}}
+                    >{{ cardInfo[item.i]?.name }}
                   </span>
                   <el-button
                     v-show="edit"
@@ -127,7 +127,7 @@ export default {
       layout: [],
       cardInfo: {},
       edit: false,
-      loading: true,
+      loading: false,
       timer: null,
       typeDict: {
         0: "PatentPie",
@@ -143,53 +143,53 @@ export default {
   },
   created() {
     this.throHandleResize = _.throttle(this.handleResize, 200);
-        this.fetchLayout()
+    this.fetchLayout();
   },
   mounted() {
-     setInterval(() => {this.fetchAllData()}, 60000);
+    setInterval(() => {
+      this.fetchAllData();
+    }, 60000);
   },
   methods: {
-    handleLayoutReady(layout){
-      console.log(layout, this.layout)
-      if(layout.length){
-        this.fetchAllData()
-      console.log("did")
-          setTimeout(() => {
-    this.layout.forEach((item) => {
-      if(this.$refs[`chart-cont-${item.i}`]){
-        erd.listenTo(this.$refs[`chart-cont-${item.i}`], () => {
-          this.$nextTick(() => {
-            this.throHandleResize(item.i);
+    handleLayoutReady(layout) {
+      if (layout.length) {
+        this.fetchAllData();
+        setTimeout(() => {
+          this.layout.forEach((item) => {
+            if (this.$refs[`chart-cont-${item.i}`]) {
+              erd.listenTo(this.$refs[`chart-cont-${item.i}`], () => {
+                this.$nextTick(() => {
+                  this.throHandleResize(item.i);
+                });
+              });
+            }
+            if (this.$refs[`chart-${item.i}`]) {
+              this.$refs[`chart-${item.i}`].chart?.resize();
+            }
           });
-        })
-      }
-      if(this.$refs[`chart-${item.i}`]){
-        this.$refs[`chart-${item.i}`].chart?.resize();
-      }
-    });
-      this.loading = false;
-    }, 0);
+          this.loading = false;
+        }, 0);
       }
     },
     handleResize(i) {
       this.$refs[`chart-${i}`].chart.resize();
     },
     fetchLayout() {
-      getLayout()
-        .then((res) => {
-          this.layout = res.layout;
-        });
+      getLayout().then((res) => {
+        this.layout = res;
+      });
     },
     fetchAllData() {
-      console.log("fetch!")
-      this.layout.forEach(item => {
-        getCardByID(item.i).then(info => {
+      console.log("fetch!");
+      this.layout.forEach((item) => {
+        getCardByID(item.i).then((info) => {
           this.cardInfo[item.i] = info;
-        })
-      })
+        });
+      });
     },
     handleEdit() {
       if (this.edit) {
+        
         // save new setting
       }
       this.edit = !this.edit;
