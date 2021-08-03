@@ -1,72 +1,92 @@
 <template>
-  <div style="width: 100%; height: 100%; display: flex; flex-flow: column;" v-loading="loading" ref="outterBox">
-    <div style="flex: 0; margin: 10px 10px 0 10px;">
-      <el-button 
-        :class=" edit ? 'el-icon-document-checked' : 'el-icon-edit-outline'" 
-        size="small"  
-        :type="edit ? 'success' : null" plain round @click="handleEdit"> {{edit ? " 保存 " : " 编辑模式 "}} </el-button>
-    </div>
-    <div v-if="false" style="flex: 0">
-      <div class="layoutJSON">
-        Displayed as <code>[x, y, w, h]</code>:
-        <div class="columns">
-          <div class="layoutItem" v-for="item in layout" :key="item.i">
-            <b>{{ item.i }}</b
-            >: [{{ item.x }}, {{ item.y }}, {{ item.w }}, {{ item.h }}]
-          </div>
-        </div>
-      </div>
-    </div>
-    <div style="margin-left: auto; margin-right: auto; width: 100%; flex-grow: 1; overflow: hidden" ref="content" class="bg">
-      <el-scrollbar >
-      <grid-layout
-        :layout="layout"
-        :col-num="16"
-        :row-height="60"
-        :is-draggable="edit"
-        :is-resizable="edit"
-        vertical-compact
-        :use-css-transforms="true"
+  <div
+    style="width: 100%; height: 100%; display: flex; flex-flow: column"
+    v-loading="loading"
+    ref="outterBox"
+  >
+    <div style="flex: 0; margin: 10px 10px 0 10px">
+      <el-button
+        :class="edit ? 'el-icon-document-checked' : 'el-icon-edit-outline'"
+        size="small"
+        :type="edit ? 'success' : null"
+        plain
+        round
+        @click="handleEdit"
       >
-        <grid-item
-          v-for="item in layout"
-          :key="item.i"
-          :x="item.x"
-          :y="item.y"
-          :w="item.w"
-          :h="item.h"
-          :i="item.i"
+        {{ edit ? " 保存 " : " 编辑模式 " }}
+      </el-button>
+    </div>
+    <div
+      style="
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+        flex-grow: 1;
+        overflow: hidden;
+      "
+      ref="content"
+      class="bg"
+    >
+      <el-scrollbar>
+        <grid-layout
+          :layout="layout"
+          :col-num="16"
+          :row-height="60"
+          :is-draggable="edit"
+          :is-resizable="edit"
+          vertical-compact
+          :use-css-transforms="true"
+          @layout-updated="handleLayoutReady"
         >
-          <el-card
-            style="
-              height: 100%;
-              display: flex;
-              box-sizing: border-box;
-              flex-direction: column;
-            "
-            :body-style="{ flex: 1 }"
+          <grid-item
+            v-for="item in layout"
+            :key="item.i"
+            :x="item.x"
+            :y="item.y"
+            :w="item.w"
+            :h="item.h"
+            :i="item.i"
           >
-            <template #header>
-              <span class="subtitle-text" style="display: flex; align-items: center"
-                > 
-                  <span style="flex: 1; font-size: 22px">{{ picDict[item.i].name }} </span>
-                <el-button v-show="edit" icon="el-icon-delete" size="mini" circle> </el-button>
-              </span>
-            </template>
-            <div :ref="`chart-cont-${item.i}`" style="height: 100%">
-              <component
-                :is="picDict[item.i].comp"
-                :ref="`chart-${item.i}`"
-                :id="'' + item.i"
-                width="100%"
-                height="100%"
-                :info="picDict[item.i].info"
-              >
-              </component>
-            </div>
-          </el-card>
-        </grid-item>
-      </grid-layout>
+            <el-card
+              style="
+                height: 100%;
+                display: flex;
+                box-sizing: border-box;
+                flex-direction: column;
+              "
+              :body-style="{ flex: 1 }"
+            >
+              <template #header>
+                <span
+                  class="subtitle-text"
+                  style="display: flex; align-items: center"
+                >
+                  <span style="flex: 1; font-size: 22px"
+                    >{{ cardInfo[item.i]?.name}}
+                  </span>
+                  <el-button
+                    v-show="edit"
+                    icon="el-icon-delete"
+                    size="mini"
+                    circle
+                  >
+                  </el-button>
+                </span>
+              </template>
+              <div :ref="`chart-cont-${item.i}`" style="height: 100%">
+                <component
+                  :is="typeDict[cardInfo[item.i]?.type]"
+                  :ref="`chart-${item.i}`"
+                  :id="'' + item.i"
+                  width="100%"
+                  height="100%"
+                  :info="cardInfo[item.i]?.info"
+                >
+                </component>
+              </div>
+            </el-card>
+          </grid-item>
+        </grid-layout>
       </el-scrollbar>
     </div>
   </div>
@@ -82,32 +102,12 @@ import EnterpriseBar from "@/components/EnterpriseCharts/EnterpriseBar";
 import EpDistributionPie from "@/components/EnterpriseCharts/EpDistributionPie";
 import EpAlterLine from "@/components/EnterpriseCharts/EpAlterLine";
 
-import {
-  getPatentPie,
-  getPatentLineRace,
-  getPatentLine,
-  getPatentMap,
-  getNewsWordMap,
-  getEnterpriseBar,
-  getEpAlterLine,
-  getEpDistributionPie,
-} from "@/utils/connector.js";
+import { getLayout, getCardByID } from "@/utils/connector.js";
 
 var elementResizeDetectorMaker = require("element-resize-detector");
 var erd = elementResizeDetectorMaker({ strategy: "scroll" });
 
 const _ = require("lodash");
-
-const testLayout = [
-  { x: 0, y: 0, w: 7, h: 9, i: 0 },
-  { x: 0, y: 9, w: 7, h: 9, i: 1 },
-  { x: 12, y: 0, w: 4, h: 7, i: 2 },
-  { x: 11, y: 14, w: 5, h: 8, i: 3 },
-  { x: 0, y: 18, w: 7, h: 4, i: 4 },
-  { x: 7, y: 14, w: 4, h: 8, i: 5 },
-  { x: 7, y: 7, w: 9, h: 6, i: 6 },
-  { x: 7, y: 0, w: 5, h: 7, i: 7 },
-];
 
 export default {
   name: "Display",
@@ -124,114 +124,75 @@ export default {
   data() {
     return {
       fullscreen: false,
-      layout: JSON.parse(JSON.stringify(testLayout)),
+      layout: [],
+      cardInfo: {},
       edit: false,
       loading: true,
-      picDict: {
-        0: {
-          comp: "patent-pie",
-          name: "2021年2月新疆专利授权状况统计",
-          info: {
-            num_patent_types: [],
-            num_applicants_types: [],
-          },
-          fetch: getPatentPie,
-        },
-        1: {
-          comp: "patent-line-race",
-          name: "2020年各地州专利授权状况年累计变化",
-          info: {
-            time_x_label: [],
-            sum: [],
-          },
-          fetch: getPatentLineRace,
-        },
-        2: {
-          comp: "patent-line",
-          name: "新疆三种专利每月申请受理趋势变化",
-          info: {
-            dataset: {
-              source: [],
-            },
-          },
-          fetch: getPatentLine,
-        },
-        3: {
-          comp: "patent-map",
-          name: "2021年2月新疆各地州专利授权情况",
-          info: {
-            num: [],
-          },
-          fetch: getPatentMap,
-        },
-        4: {
-          comp: "news-word-map",
-          name: "市场监督新闻动态",
-          info: [],
-          fetch: getNewsWordMap,
-        },
-        5: {
-          comp: "ep-distribution-pie",
-          name: "各行业企业分布情况",
-          info: [],
-          fetch: getEpDistributionPie,
-        },
-        6: {
-          comp: "ep-alter-line",
-          name: "企业注册、变更、注销统计",
-          info: {
-            time_x_label: [],
-            sum: [],
-          },
-          fetch: getEpAlterLine,
-        },
-        7: {
-          comp: "enterprise-bar",
-          name: "市场主体产业数目变化",
-          info: {
-            time_x_label: [],
-            sum: [],
-          },
-          fetch: getEnterpriseBar,
-        },
+      timer: null,
+      typeDict: {
+        0: "PatentPie",
+        1: "PatentLineRace",
+        2: "PatentLine",
+        3: "PatentMap",
+        4: "EnterpriseBar",
+        5: "EpDistributionPie",
+        6: "EpAlterLine",
+        7: "NewsWordMap",
       },
     };
   },
+  created() {
+    this.throHandleResize = _.throttle(this.handleResize, 200);
+        this.fetchLayout()
+  },
   mounted() {
-    this.fetchAllData();
-    this.layout.forEach((item) => {
-      erd.listenTo(this.$refs[`chart-cont-${item.i}`], () => {
-        this.$nextTick(() => {
-          this.deHandleResize(item.i);
-        });
-      });
-    });
-    setTimeout(() => {
-      for (const i in this.picDict) {
-        this.$refs[`chart-${i}`].chart?.resize();
-        this.loading = false;
-      }
-    }, 1200);
-    setInterval(this.fetchAllData, 60000);
+     setInterval(() => {this.fetchAllData()}, 60000);
   },
   methods: {
+    handleLayoutReady(layout){
+      console.log(layout, this.layout)
+      if(layout.length){
+        this.fetchAllData()
+      console.log("did")
+          setTimeout(() => {
+    this.layout.forEach((item) => {
+      if(this.$refs[`chart-cont-${item.i}`]){
+        erd.listenTo(this.$refs[`chart-cont-${item.i}`], () => {
+          this.$nextTick(() => {
+            this.throHandleResize(item.i);
+          });
+        })
+      }
+      if(this.$refs[`chart-${item.i}`]){
+        this.$refs[`chart-${item.i}`].chart?.resize();
+      }
+    });
+      this.loading = false;
+    }, 0);
+      }
+    },
     handleResize(i) {
       this.$refs[`chart-${i}`].chart.resize();
     },
-    fetchAllData() {
-      for (const index in this.picDict) {
-        if (this.picDict[index].fetch) {
-          this.picDict[index]
-            .fetch()
-            .then((info) => (this.picDict[index].info = info));
-        }
-      }
+    fetchLayout() {
+      getLayout()
+        .then((res) => {
+          this.layout = res.layout;
+        });
     },
-    handleEdit(){
-      if(this.edit) {
+    fetchAllData() {
+      console.log("fetch!")
+      this.layout.forEach(item => {
+        getCardByID(item.i).then(info => {
+          this.cardInfo[item.i] = info;
+        })
+      })
+    },
+    handleEdit() {
+      if (this.edit) {
         // save new setting
       }
-      this.edit = ! this.edit;
+      this.edit = !this.edit;
     },
     makeFullScreen() {
       this.fullscreen = true;
@@ -248,11 +209,8 @@ export default {
       }
     },
   },
-  created() {
-    this.deHandleResize = _.debounce(this.handleResize, 200);
-  },
   unmounted() {
-    this.deHandleResize.cancel();
+    this.throHandleResize.cancel();
   },
 };
 </script>
