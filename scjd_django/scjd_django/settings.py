@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'django_filters',
     'scjd_data',
     'chart_data',
 ]
@@ -140,3 +141,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_ALLOW_ALL = True
 
 
+REST_FRAMEWORK = {
+   # 过滤器默认后端
+    'DEFAULT_FILTER_BACKENDS': (
+           'django_filters.rest_framework.DjangoFilterBackend',),
+}

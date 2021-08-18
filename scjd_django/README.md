@@ -1,6 +1,6 @@
 # 接口实现
 
-2021.08.03 更新
+2021.08.18 更新
 
 数据管理请使用django自带后台：http://127.0.0.1:8000/admin/
 
@@ -33,13 +33,13 @@
 |  id 	    |  int   |   自增id   |
 | chart	| ForeighKey |数据对应的图表，采用主键orHyperLink连接|
 |timestamp | DateField |   文件上传的时间戳|
-|json_url | String | json文件在服务器端的路径 |
+|file_url | String | 上传文件（json or xlsx）在服务器端的路径 |
 
 
 
 **UML图**
 
-![image-20210801145108944](README.assets/image-20210801145108944.png)
+![image-20210817203815556](README.assets/image-20210817203815556.png)
 
 
 
@@ -102,10 +102,97 @@ RESTful接口，single put, single patch
 **5) json文件上传/下载**
 
 - [x] 5.1 根据数据项目ID 上传新数据内容
-- [x] 5.2 根据数据项目ID和时间戳 下载数据内容
+- [x] 5.2 根据数据项目ID和时间戳下载文件（json/xlsx）
+- [x] 5.3 根据数据项目ID和时间戳解析数据内容
 
 ## 3. HTTP接口文档
 
-
 接口文档：https://docs.apipost.cn/preview/0a52cb8f403e1526/593aa8aa8b3baccb
 
+
+
+## 4. 自定义图表部分的设计
+
+暂定
+- type=8：代表自定义折线图
+- type=9：代表自定义柱状图
+- type=10:  代表自定义饼图
+
+### 4.1 自定义折线图
+
+excel格式示例：
+
+第一行为x轴，第一列为数据名，每一行为一条折线图的数值型数据。
+
+![image-20210818152119201](README.assets/image-20210818152119201.png)
+
+参考数据来源：http://www.xjaic.gov.cn/xjaic/tzgg/202108/cb514549a8304e9d8046b53a2d4681d7.shtml
+
+前端代码参考示例：
+
+https://echarts.apache.org/examples/zh/editor.html?c=line-stack
+
+
+
+将excel数据解析后打包为一个json返回前端
+
+```json
+{
+	"xAxis_data": [
+		"一月",
+		"二月",
+		"三月",
+		"四月",
+		"五月",
+		"六月"
+	],
+	"series": [
+		{
+			"type": "line",
+			"name": "乌鲁木齐",
+			"data": [
+				10,
+				20,
+				30,
+				40,
+				50,
+				60
+			]
+		},
+		{
+			"type": "line",
+			"name": "克拉玛依",
+			"data": [
+				1,
+				2,
+				3,
+				4,
+				6,
+				7
+			]
+		},
+		{
+			"type": "line",
+			"name": "石河子",
+			"data": [
+				3,
+				7,
+				5,
+				14,
+				22,
+				5
+			]
+		}
+	]
+}
+```
+
+
+
+目前的问题，饼图和柱状图只需要一条数据即可绘图，还需要在后端处理吗？
+
+是否将excel所有数据按行读取返回前端？
+
+### 4.2 自定义柱状图
+
+### 4.3 自定义饼图
