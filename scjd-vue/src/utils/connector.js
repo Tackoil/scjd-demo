@@ -22,16 +22,42 @@ export async function getCardByID(itemID) {
     return {
       type: response.data.type,
       name: response.data.name,
-      info: response.data.history[0].json_url
+      info: response.data.history.file_url
     };
 }
-/*
-export async function updateLayout() {
-  try {
-    const response = await axios.put(`${baseurl}/updateLayout`);
-  }
-  catch {
-    console.error('error')
+
+export async function updateLayout(layout) {
+  const response = await axios.put(`${baseurl}/chart-data/display/`, 
+    layout.map(item => {
+      return {
+        id: item.id,
+        x_coordinate: item.x,
+        y_coordinate: item.y,
+        width: item.w,
+        height: item.h
+      }
+    })
+  );
+  if(response.data.length === layout.length){
+    return "success"
   }
 }
-*/
+
+export async function getDataList(){
+  const response = await axios.get(`${baseurl}/chart-data/charts/?fields=id,name/`);
+  const datalist = response.data;
+  console.log(datalist)
+  return datalist;
+}
+
+export async function getDataItem(itemID){
+  const response = await axios.get(`${baseurl}/chart-data/charts/${itemID}/?fields=id,name,history,type,display,removable/`);
+  return {
+    id: response.data.id,
+    name: response.data.name,
+    type: response.data.type,
+    display: response.data.display,
+    removable: response.data.removable,
+    history: response.data.history
+  };
+}
