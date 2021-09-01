@@ -77,6 +77,7 @@ class ChartSerializer(DynamicFieldsModelSerializer):
         finally:
             return data
 
+
 class DisplaySerializerList(serializers.ListSerializer):
     # create方法支持不必要重写
     # self.child就代表该ListSerializer类绑定的ModelSerializer类
@@ -90,7 +91,16 @@ class DisplaySerializerList(serializers.ListSerializer):
 
 # 大屏展示相关数据的序列化器
 class DisplaySerializer(serializers.ModelSerializer):
+    # 增加field验证
+    id = serializers.IntegerField(read_only=True)
+    x_coordinate = serializers.IntegerField(min_value=0, max_value=4000)
+    y_coordinate = serializers.IntegerField(min_value=0, max_value=4000)
+    width = serializers.IntegerField(min_value=0, max_value=4000)
+    height = serializers.IntegerField(min_value=0, max_value=4000)
+    display = serializers.BooleanField()
+
     class Meta:
         model = Chart
-        fields = ['id', 'x_coordinate', 'y_coordinate', 'width', 'height']
+        fields = ['id', 'x_coordinate', 'y_coordinate',
+                  'width', 'height', 'display']
         list_serializer_class = DisplaySerializerList

@@ -21,6 +21,11 @@ class ChartList(generics.ListCreateAPIView):
         try:
             fields = request.query_params.get('fields')
             fields_list = fields.split(',')
+            # 验证field是否为Chart的字段
+            for field in fields_list:
+                if field not in ['name', 'type', 'display', 'removable', 'x_coordinate', 'y_coordinate', 'width', 'height', 'history']:
+                    return Response(data={'message': "请求中包含错误的字段"}, status=status.HTTP_400_BAD_REQUEST)
+
             serializer = ChartSerializer(charts, many=True, fields=fields_list)
         except Exception as e:
             serializer = ChartSerializer(charts, many=True)
@@ -37,6 +42,10 @@ class ChartDetail(generics.RetrieveUpdateDestroyAPIView):
         try:
             fields = request.query_params.get('fields')
             fields_list = fields.split(',')
+            # 验证field是否为Chart的字段
+            for field in fields_list:
+                if field not in ['name', 'type', 'display', 'removable', 'x_coordinate', 'y_coordinate', 'width', 'height', 'history']:
+                    return Response(data={'message': "请求中包含错误的字段"}, status=status.HTTP_400_BAD_REQUEST)
             serializer = ChartSerializer(obj, fields=fields_list)
         except Exception as e:
             serializer = ChartSerializer(obj)
@@ -131,55 +140,91 @@ class DisplayAPIView(APIView):
     def put(self, request, *args, **kwargs):
         data = request.data
 
-        if kwargs.get("id") and isinstance(data, dict):
-            inst = Chart.objects.filter(id=kwargs.get("id")).first()
+        # 更新一条数据
+        # 接口为：http://127.0.0.1:8000/chart-data/display/?id=[id]
+        if isinstance(data, dict):
+            id = request.query_params.get('id')
+            try:
+                inst = Chart.objects.get(id=id)
+            # 无效的id
+            except Chart.DoesNotExist as e:
+                return Response(data={'message': "试图更新的图表不存在"}, status=status.HTTP_404_NOT_FOUND)
             serializer = DisplaySerializer(
                 instance=inst, data=data, many=False)
             if serializer.is_valid():
                 serializer.save()
+                # 更新成功以后返回更新后的大屏展示数据
+                display_query = Chart.objects.filter(display=True).all()
+                serializer = DisplaySerializer(display_query, many=True)
                 datas = serializer.data
             else:
                 datas = serializer.errors
-            return Response(data=datas, status=200)
+            return Response(data=datas)
+
+        # 更新一批数据
         elif isinstance(data, list):
             pk_objs = []
             for item in request.data:
                 pk = item.pop("id")
                 pk_objs.append(pk)
             objs = Chart.objects.filter(id__in=pk_objs)
+            # 如果批量更新的数据中有无效的id
+            if len(objs) != len(pk_objs):
+                return Response(data={'message': "试图更新的图表不存在"}, status=status.HTTP_404_NOT_FOUND)
             serializer = DisplaySerializer(instance=objs, data=data, many=True)
             if serializer.is_valid():
                 serializer.save()
+                # 更新成功以后返回更新后的大屏展示数据
+                display_query = Chart.objects.filter(display=True).all()
+                serializer = DisplaySerializer(display_query, many=True)
                 datas = serializer.data
+                return Response(data=datas)
             else:
                 datas = serializer.errors
-            return Response(data=datas, status=200)
+                # 这里是强行让状态码为400，正确该怎么做呢？
+                return Response(data=datas, status=status.HTTP_400_BAD_REQUEST)
+            
 
     def patch(self, request, *args, **kwargs):
         data = request.data
 
-        if kwargs.get("id") and isinstance(data, dict):
-            inst = Chart.objects.filter(id=kwargs.get("id")).first()
+        # 更新一条数据
+        if isinstance(data, dict):
+            id = request.query_params.get('id')
+            try:
+                inst = Chart.objects.get(id=id)
+            # 无效的id
+            except Chart.DoesNotExist as e:
+                return Response(data={'message': "试图更新的图表不存在"}, status=status.HTTP_404_NOT_FOUND)
             serializer = DisplaySerializer(
                 instance=inst, data=data, partial=True)
             if serializer.is_valid():
                 serializer.save()
+                # 更新成功以后返回更新后的大屏展示数据
+                display_query = Chart.objects.filter(display=True).all()
+                serializer = DisplaySerializer(display_query, many=True)
                 datas = serializer.data
             else:
                 datas = serializer.errors
-            return Response(data=datas, status=200)
+            return Response(data=datas)
+        # 更新一批数据
         elif isinstance(data, list):
-            many = True
             pk_objs = []
             for item in request.data:
                 pk = item.pop("id")
                 pk_objs.append(pk)
             objs = Chart.objects.filter(id__in=pk_objs)
+            # 如果批量更新的数据中有无效的id
+            if len(objs) != len(pk_objs):
+                return Response(data={'message': "试图更新的图表不存在"}, status=status.HTTP_404_NOT_FOUND)
             serializer = DisplaySerializer(
                 instance=objs, data=data, many=True, partial=True)
             if serializer.is_valid():
                 serializer.save()
+                # 更新成功以后返回更新后的大屏展示数据
+                display_query = Chart.objects.filter(display=True).all()
+                serializer = DisplaySerializer(display_query, many=True)
                 datas = serializer.data
             else:
                 datas = serializer.errors
-            return Response(data=datas, status=200)
+            return Response(data=datas)
