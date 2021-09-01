@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import Field
 from chart_data.models import Chart, FileHistory
+from django.db.models import Max
 # from datetime import datetime
 # from pytz import timezone
 
@@ -76,6 +77,20 @@ class ChartSerializer(DynamicFieldsModelSerializer):
                 data['history'] = data['history'][0]
         finally:
             return data
+
+    # 重写to_internal_value方法
+    def to_internal_value(self, data):
+        # 提取所需要的数据，对其进行反序列化，data代表未验证的数据
+        # 新生成的图表默认放在左下角
+        if not data.get('y_coordinate'):
+            if Chart.objects.all().exists():
+                # 找到最下方的图表对象
+                lowest_chart = Chart.objects.all().order_by('y_coordinate').last()
+                # 新生成的图表的y坐标为目前最下方的图表对象的y坐标加上其高度
+                data['y_coordinate'] = lowest_chart.y_coordinate + lowest_chart.height
+        value = super().to_internal_value(data)
+        return value
+
 
 
 class DisplaySerializerList(serializers.ListSerializer):

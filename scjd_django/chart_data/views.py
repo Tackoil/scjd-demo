@@ -23,7 +23,7 @@ class ChartList(generics.ListCreateAPIView):
             fields_list = fields.split(',')
             # 验证field是否为Chart的字段
             for field in fields_list:
-                if field not in ['name', 'type', 'display', 'removable', 'x_coordinate', 'y_coordinate', 'width', 'height', 'history']:
+                if field not in ['id','name', 'type', 'display', 'removable', 'x_coordinate', 'y_coordinate', 'width', 'height', 'history']:
                     return Response(data={'message': "请求中包含错误的字段"}, status=status.HTTP_400_BAD_REQUEST)
 
             serializer = ChartSerializer(charts, many=True, fields=fields_list)
@@ -44,7 +44,7 @@ class ChartDetail(generics.RetrieveUpdateDestroyAPIView):
             fields_list = fields.split(',')
             # 验证field是否为Chart的字段
             for field in fields_list:
-                if field not in ['name', 'type', 'display', 'removable', 'x_coordinate', 'y_coordinate', 'width', 'height', 'history']:
+                if field not in ['id', 'name', 'type', 'display', 'removable', 'x_coordinate', 'y_coordinate', 'width', 'height', 'history']:
                     return Response(data={'message': "请求中包含错误的字段"}, status=status.HTTP_400_BAD_REQUEST)
             serializer = ChartSerializer(obj, fields=fields_list)
         except Exception as e:
