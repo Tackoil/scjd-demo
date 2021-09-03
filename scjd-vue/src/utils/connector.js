@@ -1,9 +1,9 @@
 import axios from "axios";
 
-export const baseurl = "http://10.128.232.15:8000";
+export const baseurl = "http://10.112.207.130:14144";
 
 export async function getLayout() {
-    const response = await axios.get(`${baseurl}/chart-data/display/`);
+    const response = await axios.get(`${baseurl}/chart-data/display`);
     const layout = response.data.layout.map(item => {
       return {
         x: item.x_coordinate,
@@ -18,7 +18,7 @@ export async function getLayout() {
 }
 
 export async function getCardByID(itemID) {
-    const response = await axios.get(`${baseurl}/chart-data/charts/${itemID}/?fields=name,type,history/`);
+    const response = await axios.get(`${baseurl}/chart-data/charts/${itemID}/?fields=name,type,history`);
     return {
       type: response.data.type,
       name: response.data.name,
@@ -27,7 +27,7 @@ export async function getCardByID(itemID) {
 }
 
 export async function updateLayout(layout) {
-  const response = await axios.put(`${baseurl}/chart-data/display/`, 
+  const response = await axios.put(`${baseurl}/chart-data/display`, 
     layout.map(item => {
       return {
         id: item.id,
@@ -44,14 +44,14 @@ export async function updateLayout(layout) {
 }
 
 export async function getDataList(){
-  const response = await axios.get(`${baseurl}/chart-data/charts/?fields=id,name/`);
+  const response = await axios.get(`${baseurl}/chart-data/charts/?fields=id,name`);
   const datalist = response.data;
   console.log(datalist)
   return datalist;
 }
 
 export async function getDataItem(itemID){
-  const response = await axios.get(`${baseurl}/chart-data/charts/${itemID}/?fields=id,name,history,type,display,removable/`);
+  const response = await axios.get(`${baseurl}/chart-data/charts/${itemID}/?fields=id,name,history,type,display,removable`);
   return {
     id: response.data.id,
     name: response.data.name,
@@ -60,4 +60,24 @@ export async function getDataItem(itemID){
     removable: response.data.removable,
     history: response.data.history
   };
+}
+
+export async function getDataItemHistory(itemID){
+  const response = await axios.get(`${baseurl}/chart-data/files/?chart=${itemID}`);
+  return response.data.map(item => {
+    return {
+      timestamp: item.timestamp,
+      file_url: item.file_url
+    }
+  });
+}
+
+export async function newDataItem(itemName){
+  const response = await axios.post(`${baseurl}/chart-data/charts/`, {
+    name: itemName,
+  })
+  if(response.status === 201){
+    console.log(response)
+    return response.data.id
+  } 
 }

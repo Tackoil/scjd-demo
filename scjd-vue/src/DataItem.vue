@@ -4,7 +4,7 @@
     @back="this.$router.back()"
     content="数据项目详情"
   />
-  <div class="data-detail">
+  <div class="data-detail" v-loading="loading">
     <div class="data-detail-header">
       <div class="data-detail-header-left">
         <div class="data-detail-header-left-title">
@@ -52,7 +52,7 @@
       <el-card v-loading="loading" class="data-detail-header-card">
         <component
           class="data-detail-header-card-graph"
-          v-if="item && `${item.type}`"
+          v-if="item && `${item.type}` && false"
           :is="typeDict[item.type]"
           :ref="`chart-${this.$route.params.id}`"
           :id="'' + this.$route.params.id"
@@ -73,6 +73,14 @@
       <el-tab-pane label="数据历史" name="data-history">
         <el-table :data="history"> 
             <el-table-column prop="time" label="更新时间"/>
+            <el-table-column label="操作">
+              <template #default="scope">
+                <el-button
+                  size="mini"
+                  :disabled="!scope.row || !scope.row.file_url"
+                  @click="handleDownload(scope.row.file_url)">下载</el-button>
+              </template>
+            </el-table-column>
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="数据内容" name="data-detail">数据内容</el-tab-pane>
@@ -81,7 +89,7 @@
 </template>
 
 <script>
-import { getDataItem, getCardByID } from "@/utils/connector";
+import { getDataItem, getCardByID, getDataItemHistory } from "@/utils/connector";
 import { parseTime } from "@/utils/index"
 import { Plus } from "@element-plus/icons";
 
@@ -131,16 +139,16 @@ export default {
     Promise.all([
       getDataItem(this.$route.params.id),
       getCardByID(this.$route.params.id),
-    ]).then(([dataitem, carddata]) => {
+      getDataItemHistory(this.$route.params.id),
+    ]).then(([dataitem, carddata, historydata]) => {
       this.item = dataitem;
       this.cardData = carddata.info;
-      if(dataitem && dataitem.history){
-          this.history = dataitem.history.map(item => {
+      if(historydata){
+          this.history = historydata.map(item => {
               item.time = parseTime(new Date(item.timestamp));
               return item
           })
       }
-      console.log(dataitem)
       this.loading = false;
     });
   },
@@ -148,6 +156,11 @@ export default {
     onCardClick() {
       console.log("click");
     },
+    handleDownload(url) {
+      const alink = document.createElement('a')
+      alink.setAttribute("href", url)
+      alink.click()
+    }
   },
 };
 </script>
