@@ -18,6 +18,7 @@
     "vue": "^3.0.0",
     "vue-grid-layout": "^3.0.0-beta1",
     "vue-router": "^4.0.10",
+    "vuewordcloud": "^18.7.12",
     "wordcloud": "^1.2.2"
   },
   "devDependencies": {
