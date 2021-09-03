@@ -7,6 +7,8 @@ import 'element-plus/lib/theme-chalk/index.css';
 
 import VueGridLayout from 'vue-grid-layout'
 
+//require('./mock')
+
 const app = createApp(App);
 
 app.use(ElementPlus);

@@ -1,132 +1,87 @@
 <template>
-  <div>
-    <el-form
-      :model="ruleForm"
-      ref="ruleForm"
-      label-width="100px"
-      class="demo-ruleForm"
-    >
-      <el-form-item label="图表描述" prop="name">
-        <el-input v-model="ruleForm.name"></el-input>
-      </el-form-item>
-      <el-form-item label="图表type" prop="type">
-        <el-input v-model="ruleForm.type"></el-input>
-      </el-form-item>
-      <el-form-item label="上传数据">
-        <!-- action不应该写死，后面修改 -->
-        <el-upload
-          class="upload-demo"
-          ref="upload"
-          action="http://localhost:8000/storage/files/"
-          :on-exceed="handleExceed"
-          :on-success="handleUpload"
-          :before-remove="beforeRemove"
-          :before-upload="beforeUpload"
-          :file-list="fileList"
-          :auto-upload="false"
-          :multiple="false"
-          :limit="1"
-          accept=".json"
-          :data="ruleForm"
-          drag
-        >
-          <i class="el-icon-upload"></i>
-          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-          <template #tip>
-            <div class="el-upload__tip">只能上传 json文件，且不超过5MB</div>
-          </template>
-        </el-upload>
-      </el-form-item>
-      <el-form-item label="是否可删除">
-        <el-switch v-model="ruleForm.can_del"></el-switch>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          style="margin-left: 10px"
-          type="success"
-          @click="submitUpload"
-          >创建图表数据</el-button
-        >
-      </el-form-item>
-    </el-form>
+  <el-page-header
+    class="manage-header"
+    @back="this.$router.back()"
+    content="数据管理"
+  />
+  <div class="manage-table">
+    <el-button class="el-icon-plus" plain round @click="dialogVisible = true">
+      添加新的数据项目
+    </el-button>
+    <el-table :data="tableData" class="manage-table-box">
+      <el-table-column prop="name" label="数据项目"> </el-table-column>
+      <el-table-column fixed="right" label="操作" width="100">
+        <template #default="scope">
+          <el-button
+            @click="handleItemClick(scope.row)"
+            type="text"
+            size="small"
+            >查看</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
+  <el-dialog
+    title="新建数据项目"
+    v-model="dialogVisible"
+    width="30%"
+  >
+    <span>请输入数据项目名称</span>
+    <el-input v-model="newDataItemTitle" placeholder="请输入内容"> </el-input>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleNewDataItem"
+          >新建
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
-import axios from "axios";
-const baseurl = "http://localhost:8000";
+import { getDataList, newDataItem } from "@/utils/connector.js";
 
 export default {
+  name: "manage",
   data() {
     return {
-      ruleForm: {
-        name: "", // 图表的描述
-        type: "", // 图表的种类（从预设的几种类型中选择）
-        can_del: true, // 图表是否可删除，默认新增图表可删除
-      },
-      fileList: [],
+      tableData: [],
+      dialogVisible: false,
+      newDataItemTitle: "",
     };
   },
+  created() {
+    getDataList().then((res) => (this.tableData = res));
+  },
   methods: {
-    // 移除上传文件时要确认
-    beforeRemove(file) {
-      return this.$confirm(`确定移除 ${file.name}？`);
-    },
-
-    // 上传文件之前的钩子
-    beforeUpload(file) {
-      //判断文件格式
-      let hz = file.name.split(".").pop();
-      // console.log("hz",hz)
-      if (hz != "json") {
-        this.$message.error(`只能选择json文件`);
-        return false;
-      }
-
-      // 判断文件大小
-      let fileSize = file.size / 1024 / 1024 < 5;
-      if (!fileSize) {
-        this.$message.error("上传文件大小不能超过 5MB");
-        return false;
+    handleItemClick(item) {
+      if (item && item.id) {
+        this.$router.push(`/dataitem/${item.id}`);
       }
     },
-
-    // 上传文件个数超过定义的数量
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
-          files.length + fileList.length
-        } 个文件`
-      );
-    },
-
-    // 手动上传文件
-    submitUpload() {
-      this.$refs.upload.submit();
-    },
-
-    // 成功上传以后,
-    async handleUpload(res) {
-      this.$message.success("上传成功");
-      console.log("info", res.id); // 为啥返回的res是一个对象？
-      // 尝试下载
-      await axios
-        .get(`${baseurl}/storage/files/${res.id}/download/`)
-        .then(function (response) {
-          let file = response.data;
-          console.log(file);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+    handleNewDataItem() {
+      this.$nextTick().then(
+        newDataItem(this.newDataItemTitle).then((res) => {
+        this.$router.push(`/dataitem/${res}`)
+      })
+      )
     },
   },
 };
 </script>
 
 <style>
-.demo-ruleForm {
-  margin: 25px;
+.manage-header {
+  padding: 24px;
+}
+
+.manage-table {
+  margin: 0 24px;
+}
+
+.manage-table-box {
+  margin-top: 16px;
 }
 </style>
-

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import Field
 from chart_data.models import Chart, FileHistory
+from django.db.models import Max
 # from datetime import datetime
 # from pytz import timezone
 
@@ -77,6 +78,21 @@ class ChartSerializer(DynamicFieldsModelSerializer):
         finally:
             return data
 
+    # 重写to_internal_value方法
+    def to_internal_value(self, data):
+        # 提取所需要的数据，对其进行反序列化，data代表未验证的数据
+        # 新生成的图表默认放在左下角
+        if not data.get('y_coordinate'):
+            if Chart.objects.all().exists():
+                # 找到最下方的图表对象
+                lowest_chart = Chart.objects.all().order_by('y_coordinate').last()
+                # 新生成的图表的y坐标为目前最下方的图表对象的y坐标加上其高度
+                data['y_coordinate'] = lowest_chart.y_coordinate + lowest_chart.height
+        value = super().to_internal_value(data)
+        return value
+
+
+
 class DisplaySerializerList(serializers.ListSerializer):
     # create方法支持不必要重写
     # self.child就代表该ListSerializer类绑定的ModelSerializer类
@@ -90,7 +106,16 @@ class DisplaySerializerList(serializers.ListSerializer):
 
 # 大屏展示相关数据的序列化器
 class DisplaySerializer(serializers.ModelSerializer):
+    # 增加field验证
+    id = serializers.IntegerField(read_only=True)
+    x_coordinate = serializers.IntegerField(min_value=0, max_value=4000)
+    y_coordinate = serializers.IntegerField(min_value=0, max_value=4000)
+    width = serializers.IntegerField(min_value=0, max_value=4000)
+    height = serializers.IntegerField(min_value=0, max_value=4000)
+    display = serializers.BooleanField()
+
     class Meta:
         model = Chart
-        fields = ['id', 'x_coordinate', 'y_coordinate', 'width', 'height']
+        fields = ['id', 'x_coordinate', 'y_coordinate',
+                  'width', 'height', 'display']
         list_serializer_class = DisplaySerializerList
