@@ -11,7 +11,7 @@
           <i class="el-icon-data-line"></i>
           <span>数据大屏</span> 
           </el-menu-item>
-          <el-menu-item index="./manage"> 
+          <el-menu-item index="/manage"> 
           <i class="el-icon-takeaway-box"></i>
           <span>数据管理 </span>
           </el-menu-item>
