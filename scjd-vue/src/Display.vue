@@ -1,51 +1,50 @@
 <template>
-  <div
-    style="width: 100%; height: 100%; display: flex; flex-flow: column"
-    v-loading="loading"
-    ref="outterBox"
-  >
-    <div style="flex: 0; margin: 10px 10px 0 10px">
-      <el-button
-        :class="edit ? 'el-icon-document-checked' : 'el-icon-edit-outline'"
-        size="small"
-        :type="edit ? 'success' : null"
-        plain
-        round
-        @click="handleEdit"
-      >
-        {{ edit ? " 保存 " : " 编辑模式 " }}
-      </el-button>
+  <div style="width: 100%; height: 100%; display: flex; flex-flow: column;" v-loading="loading" ref="outterBox">
+    <div style="flex: 0; margin: 10px 10px 0 10px;">
+      <el-button 
+        :class=" edit ? 'el-icon-document-checked' : 'el-icon-edit-outline'" 
+        size="small"  
+        :type="edit ? 'success' : null" plain round @click="handleEdit"> {{edit ? " 保存 " : " 编辑模式 "}} </el-button>
     </div>
-    <div
-      style="
-        margin-left: auto;
-        margin-right: auto;
-        width: 100%;
-        flex-grow: 1;
-        overflow: hidden;
-      "
-      ref="content"
-      class="bg"
-    >
-      <el-scrollbar>
-        <grid-layout
-          :layout="layout"
-          :col-num="16"
-          :row-height="60"
-          :is-draggable="edit"
-          :is-resizable="edit"
-          vertical-compact
-          :use-css-transforms="true"
-          @layout-updated="handleLayoutReady"
+    <div v-if="false" style="flex: 0">
+      <div class="layoutJSON">
+        Displayed as <code>[x, y, w, h]</code>:
+        <div class="columns">
+          <div class="layoutItem" v-for="item in layout" :key="item.i">
+            <b>{{ item.i }}</b
+            >: [{{ item.x }}, {{ item.y }}, {{ item.w }}, {{ item.h }}]
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-left: auto; margin-right: auto; width: 100%; flex-grow: 1; overflow: hidden" ref="content" class="bg">
+      <el-scrollbar >
+      <grid-layout
+        :layout="layout"
+        :col-num="16"
+        :row-height="60"
+        :is-draggable="edit"
+        :is-resizable="edit"
+        vertical-compact
+        :use-css-transforms="true"
+      >
+        <grid-item
+          v-for="item in layout"
+          :key="item.i"
+          :x="item.x"
+          :y="item.y"
+          :w="item.w"
+          :h="item.h"
+          :i="item.i"
         >
-          <grid-item
-            v-for="item in layout"
-            :key="item.i"
-            :x="item.x"
-            :y="item.y"
-            :w="item.w"
-            :h="item.h"
-            :i="item.i"
+          <el-card
+            style="
+              height: 100%;
+              display: flex;
+              box-sizing: border-box;
+              flex-direction: column;
+            "
+            :body-style="{ flex: 1 }"
           >
             <el-card
               style="
@@ -102,12 +101,32 @@ import EnterpriseBar from "@/components/EnterpriseCharts/EnterpriseBar";
 import EpDistributionPie from "@/components/EnterpriseCharts/EpDistributionPie";
 import EpAlterLine from "@/components/EnterpriseCharts/EpAlterLine";
 
-import { getLayout, getCardByID } from "@/utils/connector.js";
+import {
+  getPatentPie,
+  getPatentLineRace,
+  getPatentLine,
+  getPatentMap,
+  getNewsWordMap,
+  getEnterpriseBar,
+  getEpAlterLine,
+  getEpDistributionPie,
+} from "@/utils/connector.js";
 
 var elementResizeDetectorMaker = require("element-resize-detector");
 var erd = elementResizeDetectorMaker({ strategy: "scroll" });
 
 const _ = require("lodash");
+
+const testLayout = [
+  { x: 0, y: 0, w: 7, h: 9, i: 0 },
+  { x: 0, y: 9, w: 7, h: 9, i: 1 },
+  { x: 12, y: 0, w: 4, h: 7, i: 2 },
+  { x: 11, y: 14, w: 5, h: 8, i: 3 },
+  { x: 0, y: 18, w: 7, h: 4, i: 4 },
+  { x: 7, y: 14, w: 4, h: 8, i: 5 },
+  { x: 7, y: 7, w: 9, h: 6, i: 6 },
+  { x: 7, y: 0, w: 5, h: 7, i: 7 },
+];
 
 export default {
   name: "Display",
@@ -124,8 +143,7 @@ export default {
   data() {
     return {
       fullscreen: false,
-      layout: [],
-      cardInfo: {},
+      layout: JSON.parse(JSON.stringify(testLayout)),
       edit: false,
       loading: false,
       timer: null,
@@ -170,7 +188,7 @@ export default {
           this.loading = false;
         }, 0);
       }
-    },
+  },
     handleResize(i) {
       this.$refs[`chart-${i}`].chart.resize();
     },
@@ -192,7 +210,7 @@ export default {
         
         // save new setting
       }
-      this.edit = !this.edit;
+      this.edit = ! this.edit;
     },
     makeFullScreen() {
       this.fullscreen = true;
@@ -209,8 +227,11 @@ export default {
       }
     },
   },
+  created() {
+    this.deHandleResize = _.debounce(this.handleResize, 200);
+  },
   unmounted() {
-    this.throHandleResize.cancel();
+    this.deHandleResize.cancel();
   },
 };
 </script>

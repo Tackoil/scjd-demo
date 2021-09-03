@@ -4,7 +4,7 @@ from django.db import models
 class Chart(models.Model):
     # 图表的基本信息
     name = models.CharField(max_length=100, blank=False, default='未命名图表')
-    type = models.IntegerField(blank=True, null=True) # 允许图表type为空
+    type = models.IntegerField(default=1)
     display = models.BooleanField(default=False)
     removable = models.BooleanField(default=False)
     # 图表的位置与尺寸信息
