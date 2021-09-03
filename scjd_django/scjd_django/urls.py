@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('storage/', include('files.urls')), # 文件上传路由, 由files应用处理这类请求
+    path('chart-data/', include('chart_data.urls')), # 图表数据管理路由, 由chart_data应用处理这类请求
+    path('admin/', admin.site.urls),
     path('', include('scjd_data.urls')),
+    
 ]
