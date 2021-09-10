@@ -1,0 +1,19 @@
+{
+    "num": [
+        {"name": "乌鲁木齐", "value": 507},
+        {"name": "昌吉州", "value": 61},
+        {"name": "克拉玛依", "value": 44},
+        {"name": "石河子", "value": 70},
+        {"name": "伊犁州", "value": 65},
+        {"name": "博州", "value": 16},
+        {"name": "塔城", "value": 30},
+        {"name": "阿勒泰", "value": 14},
+        {"name": "吐鲁番", "value": 32},
+        {"name": "哈密", "value": 71},
+        {"name": "巴州", "value": 47},
+        {"name": "阿克苏", "value": 62},
+        {"name": "喀什", "value": 36},
+        {"name": "和田", "value": 9},
+        {"name": "克州", "value": 4}
+    ]
+}

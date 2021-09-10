@@ -4,7 +4,7 @@ export const baseurl = "http://10.112.207.130:14144";
 
 export async function getLayout() {
     const response = await axios.get(`${baseurl}/chart-data/display`);
-    const layout = response.data.layout.map(item => {
+    const layout = response.data.map(item => {
       return {
         x: item.x_coordinate,
         y: item.y_coordinate,
@@ -19,22 +19,24 @@ export async function getLayout() {
 
 export async function getCardByID(itemID) {
     const response = await axios.get(`${baseurl}/chart-data/charts/${itemID}/?fields=name,type,history`);
+    const parseHistory = await getDataParse(itemID, response.data.history.timestamp)
     return {
       type: response.data.type,
       name: response.data.name,
-      info: response.data.history.file_url
+      info: parseHistory
     };
 }
 
-export async function updateLayout(layout) {
-  const response = await axios.put(`${baseurl}/chart-data/display`, 
+export async function updateLayout(layout, deleteList=[]) {
+  const response = await axios.put(`${baseurl}/chart-data/display/`,
     layout.map(item => {
       return {
-        id: item.id,
+        id: item.i,
         x_coordinate: item.x,
         y_coordinate: item.y,
         width: item.w,
-        height: item.h
+        height: item.h,
+          display: deleteList.indexOf(item.i) === -1
       }
     })
   );
@@ -75,9 +77,56 @@ export async function getDataItemHistory(itemID){
 export async function newDataItem(itemName){
   const response = await axios.post(`${baseurl}/chart-data/charts/`, {
     name: itemName,
+    removable: true
   })
   if(response.status === 201){
     console.log(response)
     return response.data.id
   } 
+}
+
+export function downloadDatafileUrl(chartID, timestamp){
+  return `${baseurl}/chart-data/files/download/?chart=${chartID}&timestamp=${timestamp}`
+}
+
+export async function deleteDataItem(itemID){
+  const response = await axios.delete(`${baseurl}/chart-data/charts/${itemID}/`,
+      {
+        validateStatus: function (status) {
+          return status < 500; // 处理状态码小于500的情况
+        }
+      })
+  if(response.status !== 204){
+    return {
+      code: -1,
+      msg: response.data.message
+    }
+  } else {
+    return {
+      code: 0,
+      msg: "已成功删除"
+    }
+  }
+}
+
+export function uploadDataUrl(){
+  return `${baseurl}/chart-data/files/`
+}
+
+export async function getDataParse(chartID, timestamp){
+  const response = await axios.get(`${baseurl}/chart-data/files/parse/?chart=${chartID}&timestamp=${timestamp}`,
+      {
+        validateStatus: function (status) {
+          return status < 500; // 处理状态码小于500的情况
+        }
+      })
+  return response.data;
+}
+
+export async function updateDataItem(itemID, data){
+    const response = await axios.put(`${baseurl}/chart-data/charts/${itemID}/`, {
+        display: data.display,
+        name: data.name
+    })
+    return response.data
 }
