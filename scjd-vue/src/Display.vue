@@ -102,7 +102,7 @@ import EnterpriseBar from "@/components/EnterpriseCharts/EnterpriseBar";
 import EpDistributionPie from "@/components/EnterpriseCharts/EpDistributionPie";
 import EpAlterLine from "@/components/EnterpriseCharts/EpAlterLine";
 
-import { getLayout, getCardByID } from "@/utils/connector.js";
+import {getLayout, getCardByID, updateLayout} from "@/utils/connector.js";
 
 var elementResizeDetectorMaker = require("element-resize-detector");
 var erd = elementResizeDetectorMaker({ strategy: "scroll" });
@@ -146,9 +146,12 @@ export default {
     this.fetchLayout();
   },
   mounted() {
-    setInterval(() => {
+    this.timer = setInterval(() => {
       this.fetchAllData();
     }, 60000);
+  },
+  beforeUnmount() {
+    clearInterval(this.timer)
   },
   methods: {
     handleLayoutReady(layout) {
@@ -189,7 +192,9 @@ export default {
     },
     handleEdit() {
       if (this.edit) {
-        
+        updateLayout(this.layout).then(() => {
+          this.$message.success("更新成功")
+        })
         // save new setting
       }
       this.edit = !this.edit;
