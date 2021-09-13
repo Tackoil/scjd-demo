@@ -7,7 +7,17 @@
 #echo $2 端口号
 
 
- python scjd_django/manage.py makemigrations
- python scjd_django/manage.py migrate
- python scjd_django/manage.py runserver $1:$2
+ ret1=${1:-'0.0.0.0'}
+ ret2=${2:-'14144'}
+ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/scjd_django"
+ MANAGE="${DIR}/manage.py"
+ if [ ! -d "${DIR}/uploads/" ]; then
+  mkdir ${DIR}/uploads/
+ fi
+ cp -f ${DIR}/initial_chart_json/*_*.json ${DIR}/uploads/
 
+ python ${MANAGE} makemigrations
+ python ${MANAGE} migrate
+ python ${MANAGE} loaddata ${DIR}/initial_chart_json/initial.json
+ cd scjd_django
+ python ${MANAGE} runserver ${ret1}:${ret2}
