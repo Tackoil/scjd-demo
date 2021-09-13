@@ -98,8 +98,12 @@ class FileHistoryViewSet(ModelViewSet, mixins.DestroyModelMixin):
     def parse(self, request, pk=None, *args, **kwargs):
         chart = request.query_params.get('chart')
         timestamp = request.query_params.get('timestamp')
-        file_obj = FileHistory.objects.filter(
-            chart=chart).filter(timestamp=int(timestamp)).first()
+        if timestamp:
+            file_obj = FileHistory.objects.filter(
+                chart=chart).filter(timestamp=int(timestamp)).first()
+        else: # 不带timestamp时，默认解析最新上传的数据
+            file_obj = FileHistory.objects.filter(
+                chart=chart).order_by('timestamp').last()
         # 获取文件后缀
         file_suffix = str(file_obj.file_url).split(".")[1]
         # 如果是json文件直接返回，不需要用不同的方式进行数据解析
@@ -110,23 +114,52 @@ class FileHistoryViewSet(ModelViewSet, mixins.DestroyModelMixin):
         elif file_suffix == 'xlsx':
             # 解析Excel的xlsx格式文件
             # 首先要查询该文件对应图表的type
-            # type=8：代表自定义折线图
-            # type=9: 代表自定义柱状图
-            # type=10: 代表自定义饼图
+            # type=8：代表自定义折线图，参考模板：https://echarts.apache.org/examples/zh/editor.html?c=line-stack
+            # type=9: 代表自定义柱状图，参考模板：https://echarts.apache.org/examples/zh/editor.html?c=bar-y-category
+            # type=10: 代表自定义饼图，参考模板：https://echarts.apache.org/examples/zh/editor.html?c=pie-simple
             data = get_data(file_obj.file_url)
+            json_data = {}
+            data = data[list(data.keys())[0]]
             chart_obj = Chart.objects.get(id=chart)
+            # 基础折线图
             if(chart_obj.type == 8):
-                json_data = {}
-                data = data[list(data.keys())[0]]
                 json_data["xAxis_data"] = data[0][1:]
                 series = []
+                legend_data = []
                 for i in range(1, len(data)):
                     temp_dict = {'type': 'line'}
                     temp_dict['name'] = data[i][0]
+                    legend_data.append(data[i][0])
                     temp_dict['data'] = data[i][1:]
                     series.append(temp_dict)
                 json_data['series'] = series
+                json_data['legend'] = {'data':legend_data}
+            # 基础柱状图
+            elif(chart_obj.type == 9):
+                json_data["xAxis_data"] = data[0][1:]
+                series = []
+                legend_data = []
+                for i in range(1, len(data)):
+                    temp_dict = {'type': 'bar'}
+                    temp_dict['name'] = data[i][0]
+                    legend_data.append(data[i][0])
+                    temp_dict['data'] = data[i][1:]
+                    series.append(temp_dict)
+                json_data['series'] = series
+                json_data['legend'] = {'data':legend_data}
+            
+            # 基础饼图
+            elif(chart_obj.type == 10):
+                json_data["name"] = data[1][0]
+                series = []
+                for i in range(1, len(data[0])):
+                    temp_dict = {}
+                    temp_dict['name'] = data[0][i]
+                    temp_dict['value'] = data[1][i]
+                    series.append(temp_dict)
+            json_data['series'] = series
             return Response(json_data)
+
 
 
 class DisplayAPIView(APIView):

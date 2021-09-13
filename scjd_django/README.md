@@ -183,16 +183,125 @@ https://echarts.apache.org/examples/zh/editor.html?c=line-stack
 				5
 			]
 		}
+	],
+	"legend": {
+		"data": [
+			"乌鲁木齐",
+			"克拉玛依",
+			"石河子"
+		]
+	}
+}
+```
+
+图表预览
+
+![image-20210913204610234](README.assets/image-20210913204610234.png)
+
+
+### 4.2 自定义柱状图
+
+前端代码参考示例：
+
+https://echarts.apache.org/examples/zh/editor.html?c=bar-y-category
+
+excel格式示例：
+
+![image-20210818152119201](README.assets/image-20210818152119201.png)
+
+将excel数据解析后打包为一个json返回前端
+
+```json
+{
+	"xAxis_data": [
+		"一月",
+		"二月",
+		"三月",
+		"四月",
+		"五月",
+		"六月"
+	],
+	"series": [
+		{
+			"type": "bar",
+			"name": "乌鲁木齐",
+			"data": [
+				10,
+				20,
+				30,
+				40,
+				50,
+				60
+			]
+		},
+		{
+			"type": "bar",
+			"name": "克拉玛依",
+			"data": [
+				1,
+				2,
+				3,
+				4,
+				6,
+				7
+			]
+		},
+		{
+			"type": "bar",
+			"name": "石河子",
+			"data": [
+				3,
+				7,
+				5,
+				14,
+				22,
+				5
+			]
+		}
+	],
+	"legend": {
+		"data": [
+			"乌鲁木齐",
+			"克拉玛依",
+			"石河子"
+		]
+	}
+}
+```
+
+图表预览
+![image-20210913204255375](README.assets/image-20210913204255375.png)
+
+### 4.3 自定义饼图
+
+前端代码参考示例：
+
+https://echarts.apache.org/examples/zh/editor.html?c=pie-simple
+
+excel格式示例：
+
+![image-20210913203505361](README.assets/image-20210913203505361.png)
+
+将excel数据解析后打包为一个json返回前端
+```json
+{
+	"name": "乌鲁木齐",
+	"series": [
+		{
+			"name": "发明专利",
+			"value": 84
+		},
+		{
+			"name": "实用新型",
+			"value": 641
+		},
+		{
+			"name": "外观设计",
+			"value": 91
+		}
 	]
 }
 ```
 
-
-
-目前的问题，饼图和柱状图只需要一条数据即可绘图，还需要在后端处理吗？
-
-是否将excel所有数据按行读取返回前端？
-
-### 4.2 自定义柱状图
-
-### 4.3 自定义饼图
+图表预览
+![image-20210913204102005](README.assets/image-20210913204102005.png)
