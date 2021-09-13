@@ -6,6 +6,13 @@
   >
     <div style="flex: 0; margin: 10px 10px 0 10px">
       <el-button
+        class="el-icon-data-board"
+        size="small"
+        plain
+        circle
+        @click="makeFullScreen"
+      />
+      <el-button
         :class="edit ? 'el-icon-document-checked' : 'el-icon-edit-outline'"
         size="small"
         :type="edit ? 'success' : null"
@@ -62,15 +69,22 @@
                   style="display: flex; align-items: center"
                 >
                   <span style="flex: 1; font-size: 22px"
-                    >{{ cardInfo[item.i]?.name }}
+                  >{{ cardInfo[item.i]?.name }}
                   </span>
-                  <el-button
-                    v-show="edit"
-                    icon="el-icon-delete"
-                    size="mini"
-                    circle
+                  <el-popconfirm
+                    title="是否移除卡片？移除卡片不会删除相关数据项目。"
+                    @confirm="handleDelete(item.i)"
                   >
-                  </el-button>
+                    <template #reference>
+                      <el-button
+                        v-show="edit"
+                        icon="el-icon-delete"
+                        size="mini"
+                        circle
+                      >
+                      </el-button>
+                    </template>
+                  </el-popconfirm>
                 </span>
               </template>
               <div :ref="`chart-cont-${item.i}`" style="height: 100%">
@@ -105,7 +119,7 @@ import EpAlterLine from "@/components/EnterpriseCharts/EpAlterLine";
 import {getLayout, getCardByID, updateLayout} from "@/utils/connector.js";
 
 var elementResizeDetectorMaker = require("element-resize-detector");
-var erd = elementResizeDetectorMaker({ strategy: "scroll" });
+var erd = elementResizeDetectorMaker({strategy: "scroll"});
 
 const _ = require("lodash");
 
@@ -151,7 +165,8 @@ export default {
     }, 60000);
   },
   beforeUnmount() {
-    clearInterval(this.timer)
+    clearInterval(this.timer);
+    this.throHandleResize.cancel();
   },
   methods: {
     handleLayoutReady(layout) {
@@ -170,7 +185,6 @@ export default {
               this.$refs[`chart-${item.i}`].chart?.resize();
             }
           });
-          this.loading = false;
         }, 0);
       }
     },
@@ -193,11 +207,25 @@ export default {
     handleEdit() {
       if (this.edit) {
         updateLayout(this.layout).then(() => {
-          this.$message.success("更新成功")
+          this.$message.success("保存成功")
+        }).catch(() => {
+          this.$message.success("保存失败")
         })
-        // save new setting
       }
       this.edit = !this.edit;
+    },
+    handleDelete(i) {
+      const index = this.layout.findIndex((item) => item.i === i);
+      if(index !== -1){
+        updateLayout(this.layout, [i]).then(() => {
+          erd.uninstall(this.$refs[`chart-cont-${i}`])
+          this.layout.splice(index, 1);
+          this.$message.success("移除成功")
+        }).catch((err) => {
+          console.error(err);
+          this.$message.error("移除失败")
+        })
+      }
     },
     makeFullScreen() {
       this.fullscreen = true;
@@ -213,9 +241,6 @@ export default {
         fullarea.msRequestFullscreen();
       }
     },
-  },
-  unmounted() {
-    this.throHandleResize.cancel();
   },
 };
 </script>
@@ -237,6 +262,7 @@ export default {
   -webkit-columns: 120px;
   columns: 120px;
 }
+
 .vue-resizable-handle {
   z-index: 5000;
   position: absolute;
@@ -256,6 +282,7 @@ export default {
 .vue-grid-item.resizing {
   opacity: 0.9;
 }
+
 .vue-grid-item .text {
   font-size: 24px;
   text-align: center;
@@ -267,12 +294,15 @@ export default {
   margin: auto;
   height: 24px;
 }
+
 .vue-grid-item .minMax {
   font-size: 12px;
 }
+
 .vue-grid-item .add {
   cursor: pointer;
 }
+
 .remove {
   position: absolute;
   right: 2px;

@@ -1,26 +1,37 @@
 <template>
+  <div
+    style="width: 100%; height: 100%; display: flex; flex-flow: column"
+  >
   <el-page-header
     class="manage-header"
     @back="this.$router.back()"
     content="数据管理"
   />
   <div class="manage-table">
-    <el-button class="el-icon-plus" plain round @click="dialogVisible = true">
-      添加新的数据项目
-    </el-button>
-    <el-table :data="tableData" class="manage-table-box">
-      <el-table-column prop="name" label="数据项目"> </el-table-column>
-      <el-table-column fixed="right" label="操作" width="100">
-        <template #default="scope">
-          <el-button
-            @click="handleItemClick(scope.row)"
-            type="text"
-            size="small"
+  <el-scrollbar view-class="scroll_inner">
+
+      <el-button class="el-icon-plus" plain round @click="dialogVisible = true">
+        添加新的数据项目
+      </el-button>
+      <el-table :data="tableData" class="manage-table-box">
+        <el-table-column prop="name" label="数据项目"> </el-table-column>
+        <el-table-column label="是否在大屏显示">
+          <template #default="scope">
+            {{ scope.row.display ? "是" : "否" }}
+          </template>
+        </el-table-column>
+        <el-table-column fixed="right" label="操作" width="100">
+          <template #default="scope">
+            <el-button
+              @click="handleItemClick(scope.row)"
+              type="text"
+              size="small"
             >查看</el-button
-          >
-        </template>
-      </el-table-column>
-    </el-table>
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+  </el-scrollbar>
   </div>
   <el-dialog
     title="新建数据项目"
@@ -38,6 +49,7 @@
       </span>
     </template>
   </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -78,10 +90,15 @@ export default {
 }
 
 .manage-table {
-  margin: 0 24px;
+  overflow: hidden;
+  flex: 1;
 }
 
 .manage-table-box {
-  margin-top: 16px;
+  margin: 16px 0;
+}
+
+.scroll_inner {
+  padding: 0 24px;
 }
 </style>

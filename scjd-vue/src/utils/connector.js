@@ -46,7 +46,7 @@ export async function updateLayout(layout, deleteList=[]) {
 }
 
 export async function getDataList(){
-  const response = await axios.get(`${baseurl}/chart-data/charts/?fields=id,name`);
+  const response = await axios.get(`${baseurl}/chart-data/charts/?fields=id,name,display`);
   const datalist = response.data;
   console.log(datalist)
   return datalist;
@@ -68,6 +68,7 @@ export async function getDataItemHistory(itemID){
   const response = await axios.get(`${baseurl}/chart-data/files/?chart=${itemID}`);
   return response.data.map(item => {
     return {
+        id: item.id,
       timestamp: item.timestamp,
       file_url: item.file_url
     }
@@ -109,8 +110,28 @@ export async function deleteDataItem(itemID){
   }
 }
 
-export function uploadDataUrl(){
-  return `${baseurl}/chart-data/files/`
+export async function newUploadData(chartId, timestamp, file){
+    const formdata = new FormData();
+    formdata.append("chart", chartId)
+    formdata.append("timestamp", timestamp)
+    formdata.append("file_url", file)
+    const response = await axios.post(`${baseurl}/chart-data/files/`, formdata, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    })
+    return response
+}
+
+export async function replaceUploadData(uploadId, file){
+    const formdata = new FormData();
+    formdata.append("file_url", file)
+    const response = await axios.patch(`${baseurl}/chart-data/files/${uploadId}/`, formdata, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    })
+    return response
 }
 
 export async function getDataParse(chartID, timestamp){
