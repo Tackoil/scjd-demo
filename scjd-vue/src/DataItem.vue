@@ -201,8 +201,7 @@ export default {
             return item
           })
         }
-        if (dataitem.type && dataitem.history.timestamp) {
-          console.log("!@#!@#!@#", "dataitem.type", dataitem.type)
+        if (''+dataitem.type && dataitem.history.timestamp) {
           this.loading = false;
           this.cardLoading = true;
           return getDataParse(id, dataitem.history.timestamp)
