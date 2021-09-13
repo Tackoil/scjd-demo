@@ -1,11 +1,10 @@
-
-scjd-vue/package-lock.json
 pa/doc.json
 .gitignore
-scjd-vue/package-lock.json
 *.pyc
 scjd_django/db.sqlite3
 scjd_django/uploads
+scjd_django/chart_data/migrations/*.py
+!scjd_django/chart_data/migrations/__init__.py
 --pycache--
 **/--pycache--
 *.pyc
