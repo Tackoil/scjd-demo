@@ -8,6 +8,6 @@ class FileHistoryFilter(filters.FilterSet):
 
     class Meta:
         model = FileHistory  # 模型名
-        fields = ['chart']   # 要过滤的字段
+        fields = ['chart','timestamp']   # 要过滤的字段
 
 
