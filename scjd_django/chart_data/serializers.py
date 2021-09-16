@@ -64,7 +64,7 @@ class ChartSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Chart
         fields = ['id', 'name', 'type', 'display', 'removable',
-                  'x_coordinate', 'y_coordinate', 'width', 'height', 'history']
+                  'x_coordinate', 'y_coordinate', 'width','min_width', 'height','min_height','history']
         read_only_fields = ['id', 'history']
 
     # 重写to_representation方法，改变序列化的输出
@@ -117,5 +117,5 @@ class DisplaySerializer(serializers.ModelSerializer):
     class Meta:
         model = Chart
         fields = ['id', 'x_coordinate', 'y_coordinate',
-                  'width', 'height', 'display']
+                  'width','min_width', 'height','min_height','display']
         list_serializer_class = DisplaySerializerList

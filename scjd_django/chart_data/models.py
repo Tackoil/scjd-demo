@@ -11,7 +11,9 @@ class Chart(models.Model):
     x_coordinate = models.IntegerField(default=0)
     y_coordinate = models.IntegerField(default=0)
     width = models.IntegerField(default=500)
+    min_width = models.IntegerField(blank=True, null=True)
     height = models.IntegerField(default=500)
+    min_height = models.IntegerField(blank=True, null=True)
 
     class Meta:
         ordering = ('type',)
