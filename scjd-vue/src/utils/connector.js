@@ -10,7 +10,9 @@ export async function getLayout() {
         y: item.y_coordinate,
         w: item.width,
         h: item.height,
-        i: item.id
+        i: item.id,
+          minW: item.min_width,
+          minH: item.min_height
       }
     });
     console.log(layout)
@@ -147,7 +149,12 @@ export async function getDataParse(chartID, timestamp){
 export async function updateDataItem(itemID, data){
     const response = await axios.put(`${baseurl}/chart-data/charts/${itemID}/`, {
         display: data.display,
-        name: data.name
+        name: data.name,
+        type: data.type,
+        width: data.w,
+        height: data.h,
+        min_width: data.minw,
+        min_height: data.minh
     })
     return response.data
 }

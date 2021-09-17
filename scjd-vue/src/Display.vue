@@ -53,6 +53,8 @@
             :w="item.w"
             :h="item.h"
             :i="item.i"
+            :minW="item.minW"
+            :minH="item.minH"
           >
             <el-card
               style="
@@ -115,6 +117,9 @@ import NewsWordMap from "@/components/Charts/NewsWordMap";
 import EnterpriseBar from "@/components/EnterpriseCharts/EnterpriseBar";
 import EpDistributionPie from "@/components/EnterpriseCharts/EpDistributionPie";
 import EpAlterLine from "@/components/EnterpriseCharts/EpAlterLine";
+import CustomLine from "@/components/Charts/CustomLine";
+import CustomHisto from "@/components/Charts/CustomHisto";
+import CustomPie from "@/components/Charts/CustomPie";
 
 import {getLayout, getCardByID, updateLayout} from "@/utils/connector.js";
 
@@ -134,6 +139,9 @@ export default {
     EpDistributionPie,
     EpAlterLine,
     NewsWordMap,
+    CustomLine,
+    CustomHisto,
+    CustomPie
   },
   data() {
     return {
@@ -152,6 +160,9 @@ export default {
         5: "EpDistributionPie",
         6: "EpAlterLine",
         7: "NewsWordMap",
+        8: "CustomLine",
+        9: "CustomHisto",
+        10: "CustomPie"
       },
     };
   },
